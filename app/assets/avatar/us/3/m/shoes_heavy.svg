@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1400" width="1000" height="1400">
+  <g id="shoes">
+    <path d="M 357.3 1234.9 L 434.4 1234.9 C 435.7 1257.5 434.4 1274.8 421.1 1285.5 C 401.1 1294.8 367.9 1310.7 342.6 1324 C 321.4 1332 294.8 1326.7 296.1 1301.4 C 297.4 1282.8 334.7 1260.2 357.3 1234.9 Z" fill="#5B7FA3" stroke="#3B211B" stroke-width="4.7" stroke-linejoin="round" stroke-linecap="round" data-fill="#5B7FA3" data-stroke="#3B211B"/>
+    <path d="M 295.3 1301.4 C 292.6 1324 320.6 1337.3 343.2 1331.3 C 368.4 1320 400.3 1304.1 418.9 1292.1 C 430.9 1284.1 434.9 1270.8 433.6 1260.2 C 430.9 1274.8 416.3 1288.1 397.7 1297.4 C 373.7 1309.4 347.1 1320 327.2 1322.7 C 312.6 1322.7 299.3 1316 295.3 1301.4 Z" fill="#E8E1D2" stroke="#3B211B" stroke-width="3.3" stroke-linejoin="round" stroke-linecap="round" data-fill="#E8E1D2" data-stroke="#3B211B"/>
+    <path d="M 340.3 1274.8 L 370.9 1264.2 M 345.6 1286.8 L 380.2 1273.5" fill="none" stroke="#F5F1E6" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="#F5F1E6"/>
+    <path d="M 642.7 1234.9 L 565.6 1234.9 C 564.3 1257.5 565.6 1274.8 578.9 1285.5 C 598.9 1294.8 632.1 1310.7 657.4 1324 C 678.6 1332 705.2 1326.7 703.9 1301.4 C 702.6 1282.8 665.3 1260.2 642.7 1234.9 Z" fill="#5B7FA3" stroke="#3B211B" stroke-width="4.7" stroke-linejoin="round" stroke-linecap="round" data-fill="#5B7FA3" data-stroke="#3B211B"/>
+    <path d="M 704.7 1301.4 C 707.4 1324 679.4 1337.3 656.8 1331.3 C 631.6 1320 599.7 1304.1 581.1 1292.1 C 569.1 1284.1 565.1 1270.8 566.4 1260.2 C 569.1 1274.8 583.7 1288.1 602.3 1297.4 C 626.3 1309.4 652.9 1320 672.8 1322.7 C 687.4 1322.7 700.7 1316 704.7 1301.4 Z" fill="#E8E1D2" stroke="#3B211B" stroke-width="3.3" stroke-linejoin="round" stroke-linecap="round" data-fill="#E8E1D2" data-stroke="#3B211B"/>
+    <path d="M 659.7 1274.8 L 629.1 1264.2 M 654.4 1286.8 L 619.8 1273.5" fill="none" stroke="#F5F1E6" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="#F5F1E6"/>
+  </g>
+</svg>

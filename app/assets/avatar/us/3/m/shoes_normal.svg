@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1400" width="1000" height="1400">
+  <g id="shoes">
+    <path d="M 385.7 1234.9 L 462.8 1234.9 C 464.1 1257.5 462.8 1274.8 449.5 1285.5 C 429.5 1294.8 396.3 1310.7 371 1324 C 349.8 1332 323.2 1326.7 324.5 1301.4 C 325.8 1282.8 363.1 1260.2 385.7 1234.9 Z" fill="#5B7FA3" stroke="#3B211B" stroke-width="4.7" stroke-linejoin="round" stroke-linecap="round" data-fill="#5B7FA3" data-stroke="#3B211B"/>
+    <path d="M 324.5 1301.4 C 321.8 1324 349.8 1337.3 372.4 1331.3 C 397.6 1320 429.5 1304.1 448.1 1292.1 C 460.1 1284.1 464.1 1270.8 462.8 1260.2 C 460.1 1274.8 445.5 1288.1 426.9 1297.4 C 402.9 1309.4 376.3 1320 356.4 1322.7 C 341.8 1322.7 328.5 1316 324.5 1301.4 Z" fill="#E8E1D2" stroke="#3B211B" stroke-width="3.3" stroke-linejoin="round" stroke-linecap="round" data-fill="#E8E1D2" data-stroke="#3B211B"/>
+    <path d="M 371 1274.8 L 401.6 1264.2 M 376.3 1286.8 L 410.9 1273.5" fill="none" stroke="#F5F1E6" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="#F5F1E6"/>
+    <path d="M 614.3 1234.9 L 537.2 1234.9 C 535.9 1257.5 537.2 1274.8 550.5 1285.5 C 570.5 1294.8 603.7 1310.7 629 1324 C 650.2 1332 676.8 1326.7 675.5 1301.4 C 674.2 1282.8 636.9 1260.2 614.3 1234.9 Z" fill="#5B7FA3" stroke="#3B211B" stroke-width="4.7" stroke-linejoin="round" stroke-linecap="round" data-fill="#5B7FA3" data-stroke="#3B211B"/>
+    <path d="M 675.5 1301.4 C 678.2 1324 650.2 1337.3 627.6 1331.3 C 602.4 1320 570.5 1304.1 551.9 1292.1 C 539.9 1284.1 535.9 1270.8 537.2 1260.2 C 539.9 1274.8 554.5 1288.1 573.1 1297.4 C 597.1 1309.4 623.7 1320 643.6 1322.7 C 658.2 1322.7 671.5 1316 675.5 1301.4 Z" fill="#E8E1D2" stroke="#3B211B" stroke-width="3.3" stroke-linejoin="round" stroke-linecap="round" data-fill="#E8E1D2" data-stroke="#3B211B"/>
+    <path d="M 629 1274.8 L 598.4 1264.2 M 623.7 1286.8 L 589.1 1273.5" fill="none" stroke="#F5F1E6" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="#F5F1E6"/>
+  </g>
+</svg>

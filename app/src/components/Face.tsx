@@ -87,7 +87,8 @@ export function FaceAvatar({
   const w = (size * VIEW_W) / VIEW_H;
 
   const design = face ? AVATAR_DESIGNS[`${style}:${face.age}`] : undefined;
-  if (face && design) return design({ face, size, build, height, region });
+  const drawn = face && design ? design({ face, size, build, height, region, glasses }) : null;
+  if (drawn) return drawn;
 
   if (!face) {
     return (

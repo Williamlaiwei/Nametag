@@ -1,55 +1,22 @@
-import { useState } from 'react';
-import { Alert, Text, View } from 'react-native';
-import { useSQLiteContext } from 'expo-sqlite';
-import { blankPerson, insertPerson, type PersonDraft } from '@/db';
-import { DEFAULT_FACE, FaceAvatar, parseFace } from '@/components/Face';
-import { PersonEditor } from '@/components/PersonEditor';
+import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ModeSwitch } from '@/components/ModeSwitch';
 import { useSettings } from '@/components/Settings';
-import { HookBadges } from '@/components/HookBadges';
-import { Tag } from '@/components/Tag';
-import { Button, Screen } from '@/components/ui';
-import { scoreLabel } from '@/lib/score';
+import { DatingMode } from '@/components/modes/DatingMode';
+import { HostMode } from '@/components/modes/HostMode';
+import { LifeMode } from '@/components/modes/LifeMode';
 import { colors } from '@/theme';
 
-// 標記碼:A01 記下來按鈕、A02 預覽;編輯器內的互動元件是 P01–P42(見 docs/codes.md)。
-export default function CaptureScreen() {
-  const db = useSQLiteContext();
-  const { style } = useSettings();
-  const [draft, setDraft] = useState<PersonDraft>(blankPerson);
-  const [busy, setBusy] = useState(false);
-  const face = parseFace(draft.face) ?? DEFAULT_FACE;
-
-  const save = async () => {
-    const isBlank = !draft.name && !draft.hook && draft.stars === 0 && !draft.face;
-    if (isBlank) {
-      Alert.alert('還沒記任何東西', '至少打個分、選個特徵,或點個記憶鉤子。');
-      return;
-    }
-    await insertPerson(db, draft);
-    setDraft(blankPerson());
-  };
-
+// 首頁:上面切換三種模式(M01 生活 / M02 約會 / M03 主辦),下面顯示該模式的畫面。
+export default function HomeScreen() {
+  const insets = useSafeAreaInsets();
+  const { mode, setMode } = useSettings();
   return (
-    <Screen scrollEnabled={!busy} safeTop>
-      <PersonEditor value={draft} onChange={setDraft} onActiveChange={setBusy} />
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 6 }}>
-      <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-        <View style={{ width: 64, height: 64 }}>
-          <FaceAvatar face={face} size={64} build={draft.build} height={draft.height} style={style} glasses={draft.hook.includes('眼鏡')} />
-          <Tag code="A02" />
-        </View>
-        <HookBadges hook={draft.hook} size={18} />
-        <View style={{ flex: 1, marginLeft: 10 }}>
-          <Text style={{ color: colors.ink, fontSize: 15 }} numberOfLines={1}>
-            {draft.name || '(沒有名字)'}
-          </Text>
-          <Text style={{ color: colors.muted, fontSize: 12 }} numberOfLines={1}>
-            {[scoreLabel(draft.stars), draft.hook, draft.note].filter(Boolean).join(' · ')}
-          </Text>
-        </View>
+    <View style={{ flex: 1, backgroundColor: colors.bg }}>
+      <View style={{ paddingTop: insets.top + 8, paddingHorizontal: 16, paddingBottom: 6 }}>
+        <ModeSwitch value={mode} onChange={setMode} />
       </View>
-      <Button title="記下來" onPress={save} code="A01" style={{ marginLeft: 10 }} />
-      </View>
-    </Screen>
+      {mode === 'life' ? <LifeMode /> : mode === 'dating' ? <DatingMode /> : <HostMode />}
+    </View>
   );
 }

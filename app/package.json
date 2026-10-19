@@ -24,6 +24,7 @@
     "react-native-svg": "15.15.4"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@types/react": "~19.2.4",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~57.0.2",
@@ -33,7 +34,9 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "avatar:build": "node scripts/avatar/build.mjs",
+    "avatar:test": "node scripts/avatar/build.mjs && node scripts/avatar/test.mjs"
   },
   "private": true
 }

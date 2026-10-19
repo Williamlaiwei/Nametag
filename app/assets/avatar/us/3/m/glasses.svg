@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1400" width="1000" height="1400">
+  <g id="glasses">
+    <path d="M 434.9 227.1 L 466.8 227.1 C 476.3 227.1 484 234.9 484 244.4 L 484 260.4 C 484 269.9 476.3 277.6 466.8 277.6 L 434.9 277.6 C 425.3 277.6 417.6 269.9 417.6 260.4 L 417.6 244.4 C 417.6 234.9 425.3 227.1 434.9 227.1 Z" fill="none" stroke="#26262B" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="#26262B"/>
+    <path d="M 534.6 225.8 L 566.5 225.8 C 576 225.8 583.8 233.5 583.8 243.1 L 583.8 259 C 583.8 268.6 576 276.3 566.5 276.3 L 534.6 276.3 C 525 276.3 517.3 268.6 517.3 259 L 517.3 243.1 C 517.3 233.5 525 225.8 534.6 225.8 Z" fill="none" stroke="#26262B" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="#26262B"/>
+    <path d="M 484 248.4 C 493.4 243.1 508 243.1 517.3 247.1" fill="none" stroke="#26262B" stroke-width="5.3" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="#26262B"/>
+    <path d="M 417.6 244.4 L 400.3 240.4" fill="none" stroke="#26262B" stroke-width="5.3" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="#26262B"/>
+    <path d="M 583.8 243.1 L 599.7 239.1" fill="none" stroke="#26262B" stroke-width="5.3" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="#26262B"/>
+  </g>
+</svg>

@@ -135,10 +135,12 @@ export function PersonEditor({
   value,
   onChange,
   onActiveChange,
+  scoreSlot,
 }: {
   value: PersonDraft;
   onChange: (p: PersonDraft) => void;
   onActiveChange?: (active: boolean) => void; // 拖動中:外層鎖住頁面捲動
+  scoreSlot?: ReactNode; // 有的話取代名字旁的星星(約會版用自己的好感度控制)
 }) {
   const win = useWindowDimensions();
   const { version, style } = useSettings();
@@ -466,10 +468,12 @@ export function PersonEditor({
             style={{ paddingVertical: 8 }}
           />
         </View>
-        <View style={{ marginLeft: 8, marginBottom: 10, alignItems: 'center' }}>
-          <Stars value={value.stars} size={22} onChange={(v) => onChange({ ...value, stars: v })} code="P04" />
-          <Text style={{ fontSize: 10, color: scoreColor(value.stars) }}>{scoreLabel(value.stars)}</Text>
-        </View>
+        {scoreSlot ?? (
+          <View style={{ marginLeft: 8, marginBottom: 10, alignItems: 'center' }}>
+            <Stars value={value.stars} size={22} onChange={(v) => onChange({ ...value, stars: v })} code="P04" />
+            <Text style={{ fontSize: 10, color: scoreColor(value.stars) }}>{scoreLabel(value.stars)}</Text>
+          </View>
+        )}
       </View>
       <Field
         code="P40"

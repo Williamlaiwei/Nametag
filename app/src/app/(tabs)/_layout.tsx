@@ -7,7 +7,7 @@ function icon(glyph: string) {
   return ({ color }: { color: ColorValue }) => <Text style={{ fontSize: 20, color }}>{glyph}</Text>;
 }
 
-// 底部分頁的標記碼:T01 快速記錄、T02 認識的人、T03 聚會、T04 我、T05 設定(開啟標記碼時顯示在分頁名稱前)
+// 底部分頁的標記碼:T01 首頁、T02 認識的人、T03 聚會、T04 我、T05 設定(開啟標記碼時顯示在分頁名稱前)
 export default function TabsLayout() {
   const { show } = useTags();
   const t = (code: string, name: string) => (show ? `${code} ${name}` : name);
@@ -22,7 +22,7 @@ export default function TabsLayout() {
         sceneStyle: { backgroundColor: colors.bg },
       }}
     >
-      <Tabs.Screen name="index" options={{ title: t('T01', '快速記錄'), tabBarIcon: icon('✎'), headerShown: false }} />
+      <Tabs.Screen name="index" options={{ title: t('T01', '首頁'), tabBarIcon: icon('✎'), headerShown: false }} />
       <Tabs.Screen name="people" options={{ title: t('T02', '認識的人'), tabBarIcon: icon('☺') }} />
       <Tabs.Screen name="gatherings" options={{ title: t('T03', '聚會'), tabBarIcon: icon('◎') }} />
       <Tabs.Screen name="me" options={{ title: t('T04', '我'), tabBarIcon: icon('♥') }} />

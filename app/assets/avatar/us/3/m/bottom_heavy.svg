@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1400" width="1000" height="1400">
+  <g id="bottom">
+    <path d="M 355.5 745.7 L 644.5 745.7 C 648.6 894.6 652.1 1067.4 655.6 1236.3 L 539.9 1234.9 C 529.3 1094 516 947.7 506.6 825.4 L 500 821.4 L 493.4 825.4 C 484 947.7 472.1 1094 462.8 1234.9 L 344.4 1236.3 C 347.9 1067.4 353.1 894.6 355.5 745.7 Z" fill="#4F78AA" stroke="#3B211B" stroke-width="4.7" stroke-linejoin="round" stroke-linecap="round" data-fill="bottom" data-stroke="#3B211B"/>
+    <path d="M 369.6 762.9 L 630.4 762.9" fill="none" stroke="#3f6088" stroke-width="2.7" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="bottomShade"/>
+    <path d="M 500 756.3 L 500 821.4" fill="none" stroke="#3f6088" stroke-width="2.7" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="bottomShade"/>
+    <path d="M 371.8 760.3 C 402.2 785.5 424 778.9 436.7 755" fill="none" stroke="#3f6088" stroke-width="2.7" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="bottomShade"/>
+    <path d="M 628.2 760.3 C 597.8 785.5 576 778.9 563.3 755" fill="none" stroke="#3f6088" stroke-width="2.7" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="bottomShade"/>
+    <path d="M 367.3 1007.6 C 387.4 1022.2 414.3 1027.5 434.8 1023.5" fill="none" stroke="#3f6088" stroke-width="2.7" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="bottomShade"/>
+    <path d="M 632.7 1007.6 C 612.6 1022.2 585.7 1027.5 565.2 1023.5" fill="none" stroke="#3f6088" stroke-width="2.7" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="bottomShade"/>
+    <path d="M 443.6 1160.5 C 448.7 1127.2 451.9 1094 454.8 1067.4" fill="none" stroke="#3f6088" stroke-width="2.7" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="bottomShade"/>
+    <path d="M 556.4 1160.5 C 551.3 1127.2 548.1 1094 545.2 1067.4" fill="none" stroke="#3f6088" stroke-width="2.7" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="bottomShade"/>
+  </g>
+</svg>

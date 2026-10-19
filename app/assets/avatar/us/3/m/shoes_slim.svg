@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1400" width="1000" height="1400">
+  <g id="shoes">
+    <path d="M 399 1234.9 L 476.1 1234.9 C 477.4 1257.5 476.1 1274.8 462.8 1285.5 C 442.8 1294.8 409.6 1310.7 384.3 1324 C 363.1 1332 336.5 1326.7 337.8 1301.4 C 339.1 1282.8 376.4 1260.2 399 1234.9 Z" fill="#5B7FA3" stroke="#3B211B" stroke-width="4.7" stroke-linejoin="round" stroke-linecap="round" data-fill="#5B7FA3" data-stroke="#3B211B"/>
+    <path d="M 338.1 1301.4 C 335.4 1324 363.4 1337.3 386 1331.3 C 411.2 1320 443.1 1304.1 461.7 1292.1 C 473.7 1284.1 477.7 1270.8 476.4 1260.2 C 473.7 1274.8 459.1 1288.1 440.5 1297.4 C 416.5 1309.4 389.9 1320 370 1322.7 C 355.4 1322.7 342.1 1316 338.1 1301.4 Z" fill="#E8E1D2" stroke="#3B211B" stroke-width="3.3" stroke-linejoin="round" stroke-linecap="round" data-fill="#E8E1D2" data-stroke="#3B211B"/>
+    <path d="M 385.3 1274.8 L 415.9 1264.2 M 390.6 1286.8 L 425.2 1273.5" fill="none" stroke="#F5F1E6" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="#F5F1E6"/>
+    <path d="M 601 1234.9 L 523.9 1234.9 C 522.6 1257.5 523.9 1274.8 537.2 1285.5 C 557.2 1294.8 590.4 1310.7 615.7 1324 C 636.9 1332 663.5 1326.7 662.2 1301.4 C 660.9 1282.8 623.6 1260.2 601 1234.9 Z" fill="#5B7FA3" stroke="#3B211B" stroke-width="4.7" stroke-linejoin="round" stroke-linecap="round" data-fill="#5B7FA3" data-stroke="#3B211B"/>
+    <path d="M 661.9 1301.4 C 664.6 1324 636.6 1337.3 614 1331.3 C 588.8 1320 556.9 1304.1 538.3 1292.1 C 526.3 1284.1 522.3 1270.8 523.6 1260.2 C 526.3 1274.8 540.9 1288.1 559.5 1297.4 C 583.5 1309.4 610.1 1320 630 1322.7 C 644.6 1322.7 657.9 1316 661.9 1301.4 Z" fill="#E8E1D2" stroke="#3B211B" stroke-width="3.3" stroke-linejoin="round" stroke-linecap="round" data-fill="#E8E1D2" data-stroke="#3B211B"/>
+    <path d="M 614.7 1274.8 L 584.1 1264.2 M 609.4 1286.8 L 574.8 1273.5" fill="none" stroke="#F5F1E6" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="#F5F1E6"/>
+  </g>
+</svg>
