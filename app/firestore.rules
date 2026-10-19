@@ -1,0 +1,36 @@
+rules_version = '2';
+
+// Partyking 雲端暫存規則
+// - 賓客用匿名登入,不需要帳號。
+// - 聚會 ID 是隨機字串,知道 ID 才讀得到;不允許列出所有聚會。
+// - 賓客只能寫自己的介紹;建立者或本人可以刪除。
+// - 聚會結束後不能再送出介紹。
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /gatherings/{gid} {
+      allow get: if request.auth != null;
+      allow list: if false;
+      allow create: if request.auth != null
+                    && request.resource.data.ownerUid == request.auth.uid
+                    && request.resource.data.title is string
+                    && request.resource.data.title.size() <= 80;
+      allow update, delete: if request.auth != null && resource.data.ownerUid == request.auth.uid;
+
+      match /members/{uid} {
+        allow get, list: if request.auth != null;
+
+        allow create, update: if request.auth != null
+                              && request.auth.uid == uid
+                              && request.time < get(/databases/$(database)/documents/gatherings/$(gid)).data.endsAt
+                              && request.resource.data.keys().hasOnly(['fields', 'updatedAt', 'expiresAt'])
+                              && request.resource.data.fields is map
+                              && request.resource.data.fields.size() <= 16;
+
+        allow delete: if request.auth != null
+                      && (request.auth.uid == uid
+                          || get(/databases/$(database)/documents/gatherings/$(gid)).data.ownerUid == request.auth.uid);
+      }
+    }
+  }
+}

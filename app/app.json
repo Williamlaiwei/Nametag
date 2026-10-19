@@ -1,0 +1,49 @@
+{
+  "expo": {
+    "name": "Partyking",
+    "slug": "partyking",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-sqlite",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "掃描 QR 碼需要使用相機"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "選擇自拍照片"
+        }
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "用 Face ID 解鎖 Partyking"
+        }
+      ],
+      "expo-status-bar"
+    ],
+    "scheme": "partyking"
+  }
+}
