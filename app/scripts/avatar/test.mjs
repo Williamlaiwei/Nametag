@@ -40,7 +40,12 @@ function runCharacter(ch) {
   const colors = ch.src.DEFAULT_COLORS;
   const sel = ch.sel;
   const compose = (s, w, h, opts) => composeSvg(ch, layers, s, w, h, colors, opts);
-  const tag = `us_3_${ch.id}`;
+  const tag = `${ch.style}_${ch.age}_${ch.gender}`;
+
+  const keysOf = (id, prefix) => Object.keys(layers.find((l) => l.id === id).variants ?? {}).filter((k) => k.startsWith(prefix)).map((k) => Number(k.slice(1)));
+  const hairKeys = [0, ...keysOf('hair_front', 'h')];
+  const outfitKeys = keysOf('top', 'o');
+  const hasGlasses = !!layers.find((l) => l.id === 'glasses').variants;
 
   // 1. 圖層順序
   const order = layers.map((l) => l.id).join(',');
@@ -83,14 +88,14 @@ function runCharacter(ch) {
 
   // 4. 身材:女 = 腰變窄,男 = 肩胸變寬
   const rowWidth = (f) => {
-    const img = render(compose({ ...sel, figure: f }, 1, 0.5, { tall: true, only: ch.id === 'f' ? ['top'] : ['top', 'bottom', 'body'] }));
-    const y = (ch.id === 'f' ? 610 : 520) - VIEW_TOP;
+    const img = render(compose({ ...sel, figure: f }, 1, 0.5, { tall: true, only: ch.gender === 'f' ? ['top'] : ['top', 'bottom', 'body'] }));
+    const y = (ch.gender === 'f' ? 610 : ch.rowY ?? 520) - VIEW_TOP;
     let lo = 1000, hi = -1;
     for (let x = 0; x < 1000; x++) if (img.pixels[(y * 1000 + x) * 4 + 3] > 8) { lo = Math.min(lo, x); hi = Math.max(hi, x); }
     return hi - lo;
   };
   const rowW = [0, 1, 2, 3].map(rowWidth);
-  if (ch.id === 'f') check(rowW[3] < rowW[0], `女 曲線:腰部寬度隨身材變窄 ${rowW.join(' → ')}`);
+  if (ch.gender === 'f') check(rowW[3] < rowW[0], `女 曲線:腰部寬度隨身材變窄 ${rowW.join(' → ')}`);
   else check(rowW[3] > rowW[0], `男 肌肉:肩胸寬度隨身材變寬 ${rowW.join(' → ')}`);
   for (const f of [1, 2, 3]) {
     const b = bbox(render(compose({ ...sel, figure: f }, BUILD_SCALES.heavy, 0.5, { tall: true })), VIEW_TOP);
@@ -100,11 +105,11 @@ function runCharacter(ch) {
   // 5. 全部髮型 × 服裝 × 體型 × 身高
   let combos = 0;
   let bad = 0;
-  for (let hair = 0; hair <= 4; hair++)
-    for (let outfit = 0; outfit <= 5; outfit++)
+  for (const hair of hairKeys)
+    for (const outfit of outfitKeys)
       for (const w of [BUILD_SCALES.slim, BUILD_SCALES.heavy])
         for (const h of [0, 1]) {
-          const png = render(compose({ hair, outfit, glasses: hair % 2 === 0, figure: 3 }, w, h, { tall: true }));
+          const png = render(compose({ hair, outfit, glasses: hasGlasses && hair % 2 === 0, figure: 3 }, w, h, { tall: true }));
           const b = bbox(png, VIEW_TOP);
           combos++;
           if (!(Math.abs(b.maxY - 1330) <= 14 && b.minX > 10 && b.maxX < 990 && b.minY >= VIEW_TOP + 2)) {
@@ -112,9 +117,9 @@ function runCharacter(ch) {
             console.log('   超出範圍:', { hair, outfit, w, h, b });
           }
         }
-  check(bad === 0, `髮型 5 × 服裝 6 × 體型 × 身高(身材最大)共 ${combos} 種組合,腳底與邊界都正常`);
-  for (let hair = 1; hair <= 4; hair++) check(!!pickShapes(layers.find((l) => l.id === 'hair_front'), { ...sel, hair }), `髮型 ${hair} 有前髮`);
-  for (let outfit = 0; outfit <= 5; outfit++) {
+  check(bad === 0, `髮型 ${hairKeys.length} × 服裝 ${outfitKeys.length} × 體型 × 身高(身材最大)共 ${combos} 種組合,腳底與邊界都正常`);
+  for (const hair of hairKeys.filter((h) => h > 0)) check(!!pickShapes(layers.find((l) => l.id === 'hair_front'), { ...sel, hair }), `髮型 ${hair} 有前髮`);
+  for (const outfit of outfitKeys) {
     const hasTop = !!pickShapes(layers.find((l) => l.id === 'top'), { ...sel, outfit });
     const hasBottom = pickShapes(layers.find((l) => l.id === 'bottom'), { ...sel, outfit }) !== null;
     check(hasTop && hasBottom, `服裝 ${outfit} 有上衣與下身(洋裝的下身是空陣列,代表刻意沒有)`);
@@ -151,15 +156,16 @@ function runCharacter(ch) {
     writeFileSync(join(out, file), render(svg).asPng());
   };
   const T = { tall: true };
-  sheet(names.map((n) => compose({ ...sel, glasses: true }, BUILD_SCALES[n], 0.5, T)), `${tag}_all.png`);
+  sheet(names.map((n) => compose({ ...sel, glasses: hasGlasses }, BUILD_SCALES[n], 0.5, T)), `${tag}_all.png`);
   sheet([0, 0.5, 1].map((h) => compose(sel, 1, h, T)), `${tag}_height.png`);
-  sheet([0, 1, 2, 3, 4, 5].map((outfit) => compose({ ...sel, outfit }, 1, 0.5, T)), `${tag}_outfits.png`);
-  sheet([0, 1, 2, 3, 4].map((hair) => compose({ ...sel, hair }, 1, 0.5, T)), `${tag}_hair.png`);
+  sheet(outfitKeys.map((outfit) => compose({ ...sel, outfit }, 1, 0.5, T)), `${tag}_outfits.png`);
+  sheet(hairKeys.map((hair) => compose({ ...sel, hair }, 1, 0.5, T)), `${tag}_hair.png`);
   sheet([0, 1, 2, 3].map((figure) => compose({ ...sel, figure }, 1, 0.5, T)), `${tag}_figure.png`);
 }
 
 // 一次只跑一個角色(resvg 在同一個程序裡連續渲染上百張會吃光記憶體):node test.mjs m|f
-for (const ch of CHARACTERS.filter((c) => !process.argv[2] || c.id === process.argv[2])) runCharacter(ch);
+// 用法:node test.mjs [us-m | us-f | kr-m …](style-gender);沒有參數就全部跑
+for (const ch of CHARACTERS.filter((c) => !process.argv[2] || `${c.style}-${c.gender}` === process.argv[2])) runCharacter(ch);
 
 console.log(failures.length ? `\n${failures.length} 項失敗` : '\n全部通過');
 process.exit(failures.length ? 1 : 0);

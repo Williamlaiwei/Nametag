@@ -8,8 +8,9 @@
     "headTopY": 150
   },
   "referenceImages": {
-    "m": "docs/reference/Gemini_Generated_Image_ck5hsuck5hsuck5h.jpg",
-    "f": "docs/reference/American girl.jpg"
+    "us_3_m": "docs/reference/Gemini_Generated_Image_ck5hsuck5hsuck5h.jpg",
+    "us_3_f": "Image/American girl.jpg",
+    "kr_3_m": "Image/Batch 1-6.jpg"
   },
   "builds": {
     "slim": 0.86,
@@ -352,6 +353,88 @@
               "h2": "assets/avatar/us/3/f/hair_front_h2.svg",
               "h3": "assets/avatar/us/3/f/hair_front_h3.svg",
               "h4": "assets/avatar/us/3/f/hair_front_h4.svg"
+            }
+          }
+        }
+      }
+    },
+    "kr": {
+      "3": {
+        "m": {
+          "hair_back": {
+            "present": false,
+            "note": ""
+          },
+          "body": {
+            "present": true,
+            "warp": "body",
+            "optional": false,
+            "files": {
+              "base": {
+                "slim": "assets/avatar/kr/3/m/body_slim.svg",
+                "normal": "assets/avatar/kr/3/m/body_normal.svg",
+                "heavy": "assets/avatar/kr/3/m/body_heavy.svg"
+              }
+            }
+          },
+          "figure": {
+            "present": false,
+            "note": "身材加強層由程式伸縮,不需要獨立圖層"
+          },
+          "bottom": {
+            "present": true,
+            "warp": "body",
+            "optional": false,
+            "files": {
+              "o2": {
+                "slim": "assets/avatar/kr/3/m/bottom_o2_slim.svg",
+                "normal": "assets/avatar/kr/3/m/bottom_o2_normal.svg",
+                "heavy": "assets/avatar/kr/3/m/bottom_o2_heavy.svg"
+              }
+            }
+          },
+          "top": {
+            "present": true,
+            "warp": "body",
+            "optional": false,
+            "files": {
+              "o2": {
+                "slim": "assets/avatar/kr/3/m/top_o2_slim.svg",
+                "normal": "assets/avatar/kr/3/m/top_o2_normal.svg",
+                "heavy": "assets/avatar/kr/3/m/top_o2_heavy.svg"
+              }
+            }
+          },
+          "shoes": {
+            "present": true,
+            "warp": "shift",
+            "optional": false,
+            "files": {
+              "o2": {
+                "slim": "assets/avatar/kr/3/m/shoes_o2_slim.svg",
+                "normal": "assets/avatar/kr/3/m/shoes_o2_normal.svg",
+                "heavy": "assets/avatar/kr/3/m/shoes_o2_heavy.svg"
+              }
+            }
+          },
+          "head": {
+            "present": true,
+            "warp": "head",
+            "optional": false,
+            "files": {
+              "base": "assets/avatar/kr/3/m/head.svg"
+            }
+          },
+          "glasses": {
+            "present": false,
+            "note": ""
+          },
+          "hair_front": {
+            "present": true,
+            "warp": "head",
+            "optional": false,
+            "files": {
+              "h2": "assets/avatar/kr/3/m/hair_front_h2.svg"
             }
           }
         }

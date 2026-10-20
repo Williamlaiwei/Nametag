@@ -1,6 +1,6 @@
-// 由 scripts/avatar/build.mjs 產生,請不要手改(要改去 scripts/avatar/us-male.source.mjs 再重跑)。
-// 美式 Emoji 風 · 男 · 20–30 歲。座標為 1000×1400 畫布。
-import type { Layer } from './compose.ts';
+// 由 scripts/avatar/build.mjs 產生,請不要手改(來源:scripts/avatar/us-male.source.mjs,改完重跑 npm run avatar:build)。
+// us · 男 · 年紀階段 3。座標為 1000×1400 畫布。
+import type { Layer } from '../compose.ts';
 
 export const US_MALE_LAYERS: Layer[] = [
  {
@@ -1034,3 +1034,7 @@ export const US_MALE_LAYERS: Layer[] = [
 ];
 
 export const US_MALE_DEFAULTS = {"skin":"#F2B392","hair":"#6B4129","top":"#3AA3A5","bottom":"#4F78AA"};
+
+export const US_MALE_ZONES = {"shoulder":420,"crotch":821,"foot":1240};
+
+export const US_MALE_FIGURE_BUMPS: [number, number, number][] | undefined = undefined;

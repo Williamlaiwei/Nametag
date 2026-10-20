@@ -1,6 +1,6 @@
-// 由 scripts/avatar/build.mjs 產生,請不要手改(要改去 scripts/avatar/us-female.source.mjs 再重跑)。
-// 美式 Emoji 風 · 女 · 20–30 歲。座標為 1000×1400 畫布。
-import type { Layer } from './compose.ts';
+// 由 scripts/avatar/build.mjs 產生,請不要手改(來源:scripts/avatar/us-female.source.mjs,改完重跑 npm run avatar:build)。
+// us · 女 · 年紀階段 3。座標為 1000×1400 畫布。
+import type { Layer } from '../compose.ts';
 
 export const US_FEMALE_LAYERS: Layer[] = [
  {
@@ -1001,3 +1001,7 @@ export const US_FEMALE_LAYERS: Layer[] = [
 ];
 
 export const US_FEMALE_DEFAULTS = {"skin":"#F2B392","hair":"#6B3F2A","top":"#F5D03E","bottom":"#4F78AA"};
+
+export const US_FEMALE_ZONES = {"shoulder":410,"crotch":796,"foot":1215};
+
+export const US_FEMALE_FIGURE_BUMPS: [number, number, number][] | undefined = undefined;

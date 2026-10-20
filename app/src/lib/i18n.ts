@@ -317,7 +317,8 @@ const EN: Record<string, string> = {
   '美式 Emoji 風格': 'American emoji',
   '設計稿尚未提供,暫時用經典小人': 'No art yet; using the classic figure',
   '20–30 歲男女已有設計(全部髮型、服裝、身材),其他年紀用經典小人': 'Ages 20–30 (m/f) are done (all hair, outfits, figures); other ages use the classic figure',
-  '三種風格 × 6 個年紀階段的設計還沒有,目前都顯示同一個預設小人。選擇會先記住,拿到設計後就會生效。': 'Designs for 3 styles × 6 age stages are not ready; the default figure is shown for now. Your choice is remembered and takes effect once art arrives.',
+  '20–30 歲男生已有設計(目前 1 種髮型、1 套服裝),其他組合用經典小人': 'Ages 20–30 male is done (1 hairstyle, 1 outfit so far); other combinations use the classic figure',
+  '目前有設計:美式 20–30 歲男女、韓漫 20–30 歲男生;其他組合顯示預設小人。': 'Available: US ages 20–30 (m/f), Korean-comic ages 20–30 (male). Other combinations show the default figure.',
 };
 
 export function translate(lang: Lang, zh: string, ...args: (string | number)[]): string {

@@ -68,7 +68,7 @@ export function layerFileSvg(ch, layer, shapes, w, colors) {
 /** 合成:sel 選髮型 / 服裝 / 眼鏡 / 身材;height 0–1;tall 為 true 時用較高的畫布(留頭頂空間) */
 export function composeSvg(ch, layers, sel, w, height, colors, { tall = false, only = null } = {}) {
   const hw = heightWarp(height, ch.zones);
-  const fig = { kind: ch.figureKind, amount: sel.figure ?? 0 };
+  const fig = { kind: ch.figureKind, amount: sel.figure ?? 0, bumps: ch.figureBumps };
   const groups = layers
     .filter((l) => !only || only.includes(l.id))
     .map((l) => [l, pickShapes(l, sel)])

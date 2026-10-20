@@ -28,6 +28,9 @@
     "@types/react": "~19.2.4",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~57.0.2",
+    "imagetracerjs": "^1.2.6",
+    "jpeg-js": "^0.4.4",
+    "pngjs": "^7.0.0",
     "typescript": "~6.0.3"
   },
   "scripts": {
@@ -36,7 +39,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "avatar:build": "node scripts/avatar/build.mjs",
-    "avatar:test": "node scripts/avatar/build.mjs && node scripts/avatar/test.mjs m && node scripts/avatar/test.mjs f"
+    "avatar:test": "node scripts/avatar/build.mjs && node scripts/avatar/test.mjs us-m && node scripts/avatar/test.mjs us-f && node scripts/avatar/test.mjs kr-m",
+    "avatar:trace": "node scripts/avatar/raster/kr-male.mjs"
   },
   "private": true
 }

@@ -131,7 +131,7 @@ export const VIEW_H = 1500;
 // ───────── 身材:女 = 曲線(胸、腰、臀),男 = 肌肉(肩胸、手臂) ─────────
 // 對身體、衣服的橫向再做一次依高度變化的伸縮;amount 0–3(一般、稍明顯、明顯、很明顯)。
 export type FigureKind = 'curvy' | 'muscle';
-export type Figure = { kind: FigureKind; amount: number };
+export type Figure = { kind: FigureKind; amount: number; bumps?: [number, number, number][] }; // bumps:這個角色自己的胸腰臀位置(比例不同的角色要改)
 
 // [中心 y, 影響寬度, 每級增減比例]
 const FIGURE_BUMPS: Record<FigureKind, [number, number, number][]> = {
@@ -147,7 +147,7 @@ const FIGURE_REACH: Record<FigureKind, [number, number]> = { curvy: [95, 140], m
 
 export function warpPathFigure(d: string, fig: Figure | undefined): string {
   if (!fig || fig.amount <= 0) return d;
-  const bumps = FIGURE_BUMPS[fig.kind];
+  const bumps = fig.bumps ?? FIGURE_BUMPS[fig.kind];
   return mapPairs(d, (x, y) => {
     const [full, none] = FIGURE_REACH[fig.kind];
     const dx = x - CENTER_X;

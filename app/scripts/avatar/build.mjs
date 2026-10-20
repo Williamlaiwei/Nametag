@@ -12,10 +12,7 @@ mkdirSync(join(root, 'src/lib/avatar'), { recursive: true });
 const manifest = {
   canvas: { width: 1000, height: 1400 },
   baseline: { footY: 1330, headTopY: 150 },
-  referenceImages: {
-    m: 'docs/reference/Gemini_Generated_Image_ck5hsuck5hsuck5h.jpg',
-    f: 'Image/American girl.jpg',
-  },
+  referenceImages: {},
   builds: BUILD_SCALES,
   height: {
     note: '身高不是等比例縮放:腳底與鞋固定,腿拉長最多(±30%),軀幹 ±8%,頭與頭髮大小不變只平移。公式在 src/lib/avatar/warp.ts 的 heightWarp。',
@@ -34,17 +31,18 @@ const manifest = {
     roles: ['skin', 'skinShade', 'hair', 'hairShade', 'top', 'topShade', 'bottom', 'bottomShade'],
     note: '每個 path 的 data-fill / data-stroke 標明顏色角色;shade 由主色自動加深',
   },
-  styles: { us: { 3: {} } },
+  styles: {},
 };
 
 let count = 0;
 for (const ch of CHARACTERS) {
   const layers = canvasLayers(ch);
+  manifest.referenceImages[`${ch.style}_${ch.age}_${ch.gender}`] = ch.reference;
   const colors = ch.src.DEFAULT_COLORS;
 
-  const ts = `// 由 scripts/avatar/build.mjs 產生,請不要手改(要改去 scripts/avatar/us-${ch.name}.source.mjs 再重跑)。
-// 美式 Emoji 風 · ${ch.id === 'm' ? '男' : '女'} · 20–30 歲。座標為 1000×1400 畫布。
-import type { Layer } from './compose.ts';
+  const ts = `// 由 scripts/avatar/build.mjs 產生,請不要手改(來源:${ch.style === 'us' ? `scripts/avatar/us-${ch.name}.source.mjs` : `scripts/avatar/raster/${ch.name}.mjs`},改完重跑 npm run avatar:build)。
+// ${ch.style} · ${ch.gender === 'm' ? '男' : '女'} · 年紀階段 ${ch.age}。座標為 1000×1400 畫布。
+import type { Layer } from '../compose.ts';
 
 export const ${ch.exportName}_LAYERS: Layer[] = ${JSON.stringify(
     layers.map(({ id, warp, optional, variants }) => ({ id, warp, optional, variants })),
@@ -53,12 +51,17 @@ export const ${ch.exportName}_LAYERS: Layer[] = ${JSON.stringify(
   )};
 
 export const ${ch.exportName}_DEFAULTS = ${JSON.stringify(colors)};
+
+export const ${ch.exportName}_ZONES = ${JSON.stringify(ch.zones)};
+
+export const ${ch.exportName}_FIGURE_BUMPS: [number, number, number][] | undefined = ${JSON.stringify(ch.figureBumps)};
 `;
+  mkdirSync(dirname(join(root, 'src/lib/avatar', ch.file)), { recursive: true });
   writeFileSync(join(root, 'src/lib/avatar', ch.file), ts);
 
-  const base = `assets/avatar/us/3/${ch.id}`;
+  const base = `assets/avatar/${ch.style}/${ch.age}/${ch.gender}`;
   mkdirSync(join(root, base), { recursive: true });
-  const files = (manifest.styles.us[3][ch.id] = {});
+  const files = (((manifest.styles[ch.style] ??= {})[ch.age] ??= {})[ch.gender] = {});
   for (const l of layers) {
     if (!l.variants) {
       files[l.id] = { present: false, note: l.note ?? '' };

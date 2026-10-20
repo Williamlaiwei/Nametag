@@ -1,5 +1,5 @@
 import { Pressable, Text, View } from 'react-native';
-import { STYLES } from '@/lib/avatarStyles';
+import { MULTI_STYLE_ENABLED, STYLES } from '@/lib/avatarStyles';
 import { VERSIONS, type VersionId } from '@/lib/versions';
 import { LANGS } from '@/lib/i18n';
 import { useSettings, useT } from '@/components/Settings';
@@ -74,29 +74,28 @@ export default function SettingsScreen() {
         ))}
       </Card>
 
+      {MULTI_STYLE_ENABLED && (<>
+      <Card>
+        <Label>{t('2. 人物的設計風格')}</Label>
+        {STYLES.map((s, i) => (
+          <Choice
+            key={s.id}
+            title={t(s.name)}
+            note={t(s.note)}
+            selected={style === s.id}
+            onPress={() => setStyle(s.id)}
+            tag={`S0${4 + i}`}
+          />
+        ))}
+        <Text style={{ color: colors.muted, fontSize: 12 }}>
+          {t('目前有設計:美式 20–30 歲男女、韓漫 20–30 歲男生;其他組合顯示預設小人。')}
+        </Text>
+      </Card>
+      <View style={{ height: 8 }} />
+      </>)}
       {version === null ? (
         <Text style={{ color: colors.muted, textAlign: 'center', marginTop: 8 }}>{t('先選上面的使用情境,才會顯示其他設定。')}</Text>
-      ) : (
-        <>
-          <Card>
-            <Label>{t('2. 人物的設計風格')}</Label>
-            {STYLES.map((s, i) => (
-              <Choice
-                key={s.id}
-                title={t(s.name)}
-                note={t(s.note)}
-                selected={style === s.id}
-                onPress={() => setStyle(s.id)}
-                tag={`S0${4 + i}`}
-              />
-            ))}
-            <Text style={{ color: colors.muted, fontSize: 12 }}>
-              {t('三種風格 × 6 個年紀階段的設計還沒有,目前都顯示同一個預設小人。選擇會先記住,拿到設計後就會生效。')}
-            </Text>
-          </Card>
-          <View style={{ height: 8 }} />
-        </>
-      )}
+      ) : null}
     </Screen>
   );
 }

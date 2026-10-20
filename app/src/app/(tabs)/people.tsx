@@ -9,11 +9,12 @@ import { Stars } from '@/components/Stars';
 import { Tag } from '@/components/Tag';
 import { Chip, code, Empty, Field, Row } from '@/components/ui';
 import { colors } from '@/theme';
-import { useT } from '@/components/Settings';
+import { useSettings, useT } from '@/components/Settings';
 
 // 標記碼:B01 搜尋框、B02–B05 篩選(全部 / 3 星以上 / 4 星以上 / 還沒打分)、
 //         B06 每一列(點進詳細頁)、B07 每一列上的星星(拖動打分)
 export default function PeopleScreen() {
+  const { style } = useSettings();
   const t = useT();
   const db = useSQLiteContext();
   const [search, setSearch] = useState('');
@@ -70,7 +71,7 @@ export default function PeopleScreen() {
               borderColor: colors.line,
             }}
           >
-            <FaceAvatar face={parseFace(item.face)} size={64} build={item.build} height={item.height} />
+            <FaceAvatar face={parseFace(item.face)} size={64} build={item.build} height={item.height} style={style} />
             <View style={{ marginLeft: 12, flex: 1 }}>
               <Text style={{ fontSize: 17, fontWeight: '600', color: colors.ink }}>{item.name || t('(還不知道名字)')}</Text>
               <Text numberOfLines={1} style={{ color: colors.muted, marginTop: 2, marginBottom: 4 }}>

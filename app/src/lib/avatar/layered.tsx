@@ -3,14 +3,29 @@ import Svg, { G, Path } from 'react-native-svg';
 import type { FaceConfig } from '@/components/Face';
 import { HAIR_COLORS, clothColor, isFemale, skinPalette, type Region } from '@/lib/capture';
 import { heightWarp, layerPath, pickShapes, resolveColor, type Colors } from './compose.ts';
-import { US_FEMALE_LAYERS } from './usFemale';
-import { US_MALE_LAYERS } from './usMale';
-import { CANVAS_W, FEMALE_ZONES, MALE_ZONES, VIEW_H, VIEW_TOP, buildScale, type Figure } from './warp.ts';
+import { CANVAS_W, VIEW_H, VIEW_TOP, buildScale, type Figure, type Zones } from './warp.ts';
+import type { Layer } from './compose.ts';
 
-// 美式 Emoji 風 · 20–30 歲(年紀階段 3)。男、女各一套:髮型 0–4、服裝 0–5、身材 0–3、體型、身高、眼鏡都有。
-// 素材與產生方式見 scripts/avatar/ 與 assets/avatar/manifest.json。其他年紀還沒有素材,由 Face.tsx 退回經典小人。
+// 分層向量人物:一套素材 = 一個「風格 × 年紀 × 性別」。素材與產生方式見 scripts/avatar/ 與 assets/avatar/manifest.json。
+// 沒有素材的組合由 Face.tsx 退回經典小人。
 
-export function UsAvatar({
+export type AvatarDesign = {
+  layers: Layer[];
+  zones: Zones;
+  kind: Figure['kind'];
+  bumps?: Figure['bumps'];
+};
+
+/** 這個設計有沒有目前選的髮型與服裝(沒有就該退回經典小人);眼鏡缺素材時只是不畫 */
+export function designSupports(d: AvatarDesign, hair: number, outfit: number): boolean {
+  const has = (id: string, key: string) => d.layers.some((l) => l.id === id && l.variants && key in l.variants);
+  const hairOk = hair === 0 || has('hair_front', `h${hair}`) || has('hair_back', `h${hair}`);
+  const outfitOk = has('top', `o${outfit}`) || has('bottom', `o${outfit}`);
+  return hairOk && outfitOk;
+}
+
+export function LayeredAvatar({
+  design,
   face,
   size,
   build,
@@ -18,6 +33,7 @@ export function UsAvatar({
   region,
   glasses,
 }: {
+  design: AvatarDesign;
   face: FaceConfig;
   size: number;
   build: number;
@@ -26,7 +42,7 @@ export function UsAvatar({
   glasses: boolean;
 }) {
   const female = isFemale(face.gender);
-  const layers = female ? US_FEMALE_LAYERS : US_MALE_LAYERS;
+  const { layers, zones, kind, bumps } = design;
   const w = buildScale(build);
   const skinList = skinPalette(region);
   const colors: Colors = {
@@ -39,8 +55,8 @@ export function UsAvatar({
   const key = `${female}|${w}|${height}|${face.hair}|${face.outfit}|${figureLevel}|${glasses}|${colors.skin}|${colors.hair}|${colors.top}|${colors.bottom}`;
 
   const groups = useMemo(() => {
-    const hw = heightWarp(height, female ? FEMALE_ZONES : MALE_ZONES);
-    const fig: Figure = { kind: female ? 'curvy' : 'muscle', amount: figureLevel };
+    const hw = heightWarp(height, zones);
+    const fig: Figure = { kind, amount: figureLevel, bumps };
     const sel = { hair: face.hair, outfit: face.outfit, glasses };
     return layers.map((l) => {
       const shapes = pickShapes(l, sel);
