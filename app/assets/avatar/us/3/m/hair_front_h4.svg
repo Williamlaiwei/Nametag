@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1400" width="1000" height="1400">
+  <g id="hair_front">
+    <path d="M 393.6 256.4 C 380.3 196.5 387 136.7 436.2 100.8 C 482.7 76.9 549.2 78.2 589.1 104.8 C 619.7 131.4 626.3 196.5 607.7 255 C 601 216.5 589.1 188.6 574.5 175.3 C 535.9 159.3 468.1 159.3 429.5 176.6 C 413.6 193.9 402.9 224.5 393.6 256.4 Z" fill="#6B4129" stroke="#3B211B" stroke-width="4.7" stroke-linejoin="round" stroke-linecap="round" data-fill="hair" data-stroke="#3B211B"/>
+    <path d="M 400.3 229.8 C 389.6 283 384.3 342.8 393.6 402.6 C 402.9 414.6 421.6 410.6 424.2 396 C 413.6 342.8 412.2 296.3 417.6 249.7 Z" fill="#6B4129" stroke="#3B211B" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" data-fill="hair" data-stroke="#3B211B"/>
+    <path d="M 599.7 229.8 C 610.4 283 615.7 342.8 606.4 402.6 C 597.1 414.6 578.4 410.6 575.8 396 C 586.4 342.8 587.8 296.3 582.4 249.7 Z" fill="#6B4129" stroke="#3B211B" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" data-fill="hair" data-stroke="#3B211B"/>
+    <path d="M 442.8 116.8 C 489.4 96.8 542.5 99.5 582.4 123.4" fill="none" stroke="#4d2f1e" stroke-width="3.3" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="hairShade"/>
+    <path d="M 469.4 108.8 C 473.4 130.1 477.4 147.3 480.1 160.6" fill="none" stroke="#4d2f1e" stroke-width="3.3" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="hairShade"/>
+  </g>
+</svg>

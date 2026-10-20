@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1400" width="1000" height="1400">
+  <g id="hair_back">
+    <path d="M 505.9 106.7 C 449.9 105.2 397 137.6 382.2 181.7 C 361.6 243.6 349.8 302.4 352.8 346.6 C 341 393.7 352.8 443.8 367.5 485 C 388.1 508.5 408.7 496.8 426.4 511.5 L 573.6 511.5 C 591.3 496.8 614.8 508.5 635.4 485 C 650.2 443.8 661.9 393.7 647.2 346.6 C 650.2 302.4 638.4 243.6 617.8 181.7 C 606 137.6 561.8 108.1 505.9 106.7 Z" fill="#6B3F2A" stroke="#3B211B" stroke-width="4.9" stroke-linejoin="round" stroke-linecap="round" data-fill="hair" data-stroke="#3B211B"/>
+    <path d="M 376.3 243.6 C 367.5 302.4 370.5 361.3 379.3 408.4" fill="none" stroke="#4d2d1e" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="hairShade"/>
+    <path d="M 623.7 243.6 C 632.5 302.4 629.5 361.3 620.7 408.4" fill="none" stroke="#4d2d1e" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="hairShade"/>
+    <path d="M 399.9 434.9 C 408.7 458.5 420.5 473.2 432.3 482" fill="none" stroke="#4d2d1e" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="hairShade"/>
+    <path d="M 600.1 434.9 C 591.3 458.5 579.5 473.2 567.7 482" fill="none" stroke="#4d2d1e" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="hairShade"/>
+  </g>
+</svg>

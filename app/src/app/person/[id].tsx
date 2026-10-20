@@ -7,8 +7,10 @@ import { INTRO_LABELS, type IntroKey } from '@/lib/intro';
 import { PersonEditor } from '@/components/PersonEditor';
 import { Button, Card, Label, Screen } from '@/components/ui';
 import { colors } from '@/theme';
+import { useT } from '@/components/Settings';
 
 export default function PersonScreen() {
+  const t = useT();
   const db = useSQLiteContext();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [draft, setDraft] = useState<PersonDraft | null>(null);
@@ -28,10 +30,10 @@ export default function PersonScreen() {
   };
 
   const remove = () =>
-    Alert.alert('刪除這個人?', '私人筆記會一併刪除,無法復原。', [
-      { text: '取消', style: 'cancel' },
+    Alert.alert(t('刪除這個人?'), t('私人筆記會一併刪除,無法復原。'), [
+      { text: t('取消'), style: 'cancel' },
       {
-        text: '刪除',
+        text: t('刪除'),
         style: 'destructive',
         onPress: async () => {
           await deletePerson(db, Number(id));
@@ -42,21 +44,21 @@ export default function PersonScreen() {
 
   return (
     <Screen>
-      <Stack.Screen options={{ title: draft.name || '認識的人' }} />
+      <Stack.Screen options={{ title: draft.name || t('認識的人') }} />
       {intro && (
         <Card>
-          <Label>對方分享的自我介紹</Label>
+          <Label>{t('對方分享的自我介紹')}</Label>
           {(Object.keys(intro.fields) as IntroKey[]).map((k) => (
             <Text key={k} style={{ color: colors.ink, marginTop: 4 }}>
-              <Text style={{ color: colors.muted }}>{INTRO_LABELS[k]}:</Text>
+              <Text style={{ color: colors.muted }}>{t(INTRO_LABELS[k])}:</Text>
               {intro.fields[k]}
             </Text>
           ))}
         </Card>
       )}
       <PersonEditor value={draft} onChange={setDraft} />
-      <Button title="儲存" onPress={save} style={{ marginBottom: 10 }} code="E01" />
-      <Button title="刪除" kind="danger" onPress={remove} code="E02" />
+      <Button title={t('儲存')} onPress={save} style={{ marginBottom: 10 }} code="E01" />
+      <Button title={t('刪除')} kind="danger" onPress={remove} code="E02" />
     </Screen>
   );
 }

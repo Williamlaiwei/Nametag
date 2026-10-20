@@ -7,22 +7,47 @@
     "footY": 1330,
     "headTopY": 150
   },
-  "referenceImage": "docs/reference/Gemini_Generated_Image_ck5hsuck5hsuck5h.jpg",
-  "layerOrder": [
-    "hair_back",
-    "body",
-    "figure",
-    "bottom",
-    "top",
-    "shoes",
-    "head",
-    "glasses",
-    "hair_front"
-  ],
+  "referenceImages": {
+    "m": "docs/reference/Gemini_Generated_Image_ck5hsuck5hsuck5h.jpg",
+    "f": "docs/reference/American girl.jpg"
+  },
   "builds": {
     "slim": 0.86,
     "normal": 1,
     "heavy": 1.3
+  },
+  "height": {
+    "note": "身高不是等比例縮放:腳底與鞋固定,腿拉長最多(±30%),軀幹 ±8%,頭與頭髮大小不變只平移。公式在 src/lib/avatar/warp.ts 的 heightWarp。"
+  },
+  "figure": {
+    "note": "身材 0–3:女 = 曲線(胸、腰、臀),男 = 肌肉(肩胸)。由程式對身體與衣服做橫向伸縮(warpPathFigure),不需要獨立圖層。"
+  },
+  "variants": {
+    "hair": {
+      "0": "光頭(無檔案)",
+      "1": "寸頭",
+      "2": "短髮",
+      "3": "油頭",
+      "4": "長髮"
+    },
+    "outfit": {
+      "m": {
+        "0": "汗衫",
+        "1": "短短",
+        "2": "短長",
+        "3": "長長",
+        "4": "Casual",
+        "5": "正裝"
+      },
+      "f": {
+        "0": "小可愛",
+        "1": "短褲",
+        "2": "長長",
+        "3": "Casual",
+        "4": "正裝",
+        "5": "禮服"
+      }
+    }
   },
   "recolor": {
     "roles": [
@@ -35,76 +60,299 @@
       "bottom",
       "bottomShade"
     ],
-    "note": "每個 path 的 data-fill / data-stroke 標明顏色角色;shade 由主色自動加深",
-    "defaults": {
-      "skin": "#F2B392",
-      "hair": "#6B4129",
-      "top": "#3AA3A5",
-      "bottom": "#4F78AA"
-    }
+    "note": "每個 path 的 data-fill / data-stroke 標明顏色角色;shade 由主色自動加深"
   },
   "styles": {
     "us": {
       "3": {
         "m": {
           "hair_back": {
-            "present": false,
-            "note": "短髮沒有後髮層"
+            "present": true,
+            "warp": "head",
+            "optional": false,
+            "files": {
+              "h4": "assets/avatar/us/3/m/hair_back_h4.svg"
+            }
           },
           "body": {
             "present": true,
             "warp": "body",
+            "optional": false,
             "files": {
-              "slim": "assets/avatar/us/3/m/body_slim.svg",
-              "normal": "assets/avatar/us/3/m/body_normal.svg",
-              "heavy": "assets/avatar/us/3/m/body_heavy.svg"
+              "base": {
+                "slim": "assets/avatar/us/3/m/body_slim.svg",
+                "normal": "assets/avatar/us/3/m/body_normal.svg",
+                "heavy": "assets/avatar/us/3/m/body_heavy.svg"
+              }
             }
           },
           "figure": {
             "present": false,
-            "note": "身材加強層(曲線 / 肌肉)尚未描摹;「一般」本來就沒有"
+            "note": "身材加強層(肌肉)尚未描摹;「一般」本來就沒有"
           },
           "bottom": {
             "present": true,
             "warp": "body",
+            "optional": false,
             "files": {
-              "slim": "assets/avatar/us/3/m/bottom_slim.svg",
-              "normal": "assets/avatar/us/3/m/bottom_normal.svg",
-              "heavy": "assets/avatar/us/3/m/bottom_heavy.svg"
+              "o0": {
+                "slim": "assets/avatar/us/3/m/bottom_o0_slim.svg",
+                "normal": "assets/avatar/us/3/m/bottom_o0_normal.svg",
+                "heavy": "assets/avatar/us/3/m/bottom_o0_heavy.svg"
+              },
+              "o1": {
+                "slim": "assets/avatar/us/3/m/bottom_o1_slim.svg",
+                "normal": "assets/avatar/us/3/m/bottom_o1_normal.svg",
+                "heavy": "assets/avatar/us/3/m/bottom_o1_heavy.svg"
+              },
+              "o2": {
+                "slim": "assets/avatar/us/3/m/bottom_o2_slim.svg",
+                "normal": "assets/avatar/us/3/m/bottom_o2_normal.svg",
+                "heavy": "assets/avatar/us/3/m/bottom_o2_heavy.svg"
+              },
+              "o3": {
+                "slim": "assets/avatar/us/3/m/bottom_o3_slim.svg",
+                "normal": "assets/avatar/us/3/m/bottom_o3_normal.svg",
+                "heavy": "assets/avatar/us/3/m/bottom_o3_heavy.svg"
+              },
+              "o4": {
+                "slim": "assets/avatar/us/3/m/bottom_o4_slim.svg",
+                "normal": "assets/avatar/us/3/m/bottom_o4_normal.svg",
+                "heavy": "assets/avatar/us/3/m/bottom_o4_heavy.svg"
+              },
+              "o5": {
+                "slim": "assets/avatar/us/3/m/bottom_o5_slim.svg",
+                "normal": "assets/avatar/us/3/m/bottom_o5_normal.svg",
+                "heavy": "assets/avatar/us/3/m/bottom_o5_heavy.svg"
+              }
             }
           },
           "top": {
             "present": true,
             "warp": "body",
+            "optional": false,
             "files": {
-              "slim": "assets/avatar/us/3/m/top_slim.svg",
-              "normal": "assets/avatar/us/3/m/top_normal.svg",
-              "heavy": "assets/avatar/us/3/m/top_heavy.svg"
+              "o0": {
+                "slim": "assets/avatar/us/3/m/top_o0_slim.svg",
+                "normal": "assets/avatar/us/3/m/top_o0_normal.svg",
+                "heavy": "assets/avatar/us/3/m/top_o0_heavy.svg"
+              },
+              "o1": {
+                "slim": "assets/avatar/us/3/m/top_o1_slim.svg",
+                "normal": "assets/avatar/us/3/m/top_o1_normal.svg",
+                "heavy": "assets/avatar/us/3/m/top_o1_heavy.svg"
+              },
+              "o2": {
+                "slim": "assets/avatar/us/3/m/top_o2_slim.svg",
+                "normal": "assets/avatar/us/3/m/top_o2_normal.svg",
+                "heavy": "assets/avatar/us/3/m/top_o2_heavy.svg"
+              },
+              "o3": {
+                "slim": "assets/avatar/us/3/m/top_o3_slim.svg",
+                "normal": "assets/avatar/us/3/m/top_o3_normal.svg",
+                "heavy": "assets/avatar/us/3/m/top_o3_heavy.svg"
+              },
+              "o4": {
+                "slim": "assets/avatar/us/3/m/top_o4_slim.svg",
+                "normal": "assets/avatar/us/3/m/top_o4_normal.svg",
+                "heavy": "assets/avatar/us/3/m/top_o4_heavy.svg"
+              },
+              "o5": {
+                "slim": "assets/avatar/us/3/m/top_o5_slim.svg",
+                "normal": "assets/avatar/us/3/m/top_o5_normal.svg",
+                "heavy": "assets/avatar/us/3/m/top_o5_heavy.svg"
+              }
             }
           },
           "shoes": {
             "present": true,
             "warp": "shift",
+            "optional": false,
             "files": {
-              "slim": "assets/avatar/us/3/m/shoes_slim.svg",
-              "normal": "assets/avatar/us/3/m/shoes_normal.svg",
-              "heavy": "assets/avatar/us/3/m/shoes_heavy.svg"
+              "base": {
+                "slim": "assets/avatar/us/3/m/shoes_slim.svg",
+                "normal": "assets/avatar/us/3/m/shoes_normal.svg",
+                "heavy": "assets/avatar/us/3/m/shoes_heavy.svg"
+              }
             }
           },
           "head": {
             "present": true,
+            "warp": "head",
             "optional": false,
-            "file": "assets/avatar/us/3/m/head.svg"
+            "files": {
+              "base": "assets/avatar/us/3/m/head.svg"
+            }
           },
           "glasses": {
             "present": true,
+            "warp": "head",
             "optional": true,
-            "file": "assets/avatar/us/3/m/glasses.svg"
+            "files": {
+              "base": "assets/avatar/us/3/m/glasses.svg"
+            }
           },
           "hair_front": {
             "present": true,
+            "warp": "head",
             "optional": false,
-            "file": "assets/avatar/us/3/m/hair_front.svg"
+            "files": {
+              "h1": "assets/avatar/us/3/m/hair_front_h1.svg",
+              "h2": "assets/avatar/us/3/m/hair_front_h2.svg",
+              "h3": "assets/avatar/us/3/m/hair_front_h3.svg",
+              "h4": "assets/avatar/us/3/m/hair_front_h4.svg"
+            }
+          }
+        },
+        "f": {
+          "hair_back": {
+            "present": true,
+            "warp": "head",
+            "optional": false,
+            "files": {
+              "h2": "assets/avatar/us/3/f/hair_back_h2.svg",
+              "h4": "assets/avatar/us/3/f/hair_back_h4.svg"
+            }
+          },
+          "body": {
+            "present": true,
+            "warp": "body",
+            "optional": false,
+            "files": {
+              "base": {
+                "slim": "assets/avatar/us/3/f/body_slim.svg",
+                "normal": "assets/avatar/us/3/f/body_normal.svg",
+                "heavy": "assets/avatar/us/3/f/body_heavy.svg"
+              }
+            }
+          },
+          "figure": {
+            "present": false,
+            "note": "曲線由程式依身材等級對身體與衣服做橫向伸縮(warpPathFigure),不需要獨立圖層"
+          },
+          "bottom": {
+            "present": true,
+            "warp": "body",
+            "optional": false,
+            "files": {
+              "o0": {
+                "slim": "assets/avatar/us/3/f/bottom_o0_slim.svg",
+                "normal": "assets/avatar/us/3/f/bottom_o0_normal.svg",
+                "heavy": "assets/avatar/us/3/f/bottom_o0_heavy.svg"
+              },
+              "o1": {
+                "slim": "assets/avatar/us/3/f/bottom_o1_slim.svg",
+                "normal": "assets/avatar/us/3/f/bottom_o1_normal.svg",
+                "heavy": "assets/avatar/us/3/f/bottom_o1_heavy.svg"
+              },
+              "o2": {
+                "slim": "assets/avatar/us/3/f/bottom_o2_slim.svg",
+                "normal": "assets/avatar/us/3/f/bottom_o2_normal.svg",
+                "heavy": "assets/avatar/us/3/f/bottom_o2_heavy.svg"
+              },
+              "o3": {
+                "slim": "assets/avatar/us/3/f/bottom_o3_slim.svg",
+                "normal": "assets/avatar/us/3/f/bottom_o3_normal.svg",
+                "heavy": "assets/avatar/us/3/f/bottom_o3_heavy.svg"
+              },
+              "o4": {
+                "slim": "assets/avatar/us/3/f/bottom_o4_slim.svg",
+                "normal": "assets/avatar/us/3/f/bottom_o4_normal.svg",
+                "heavy": "assets/avatar/us/3/f/bottom_o4_heavy.svg"
+              },
+              "o5": null
+            }
+          },
+          "top": {
+            "present": true,
+            "warp": "body",
+            "optional": false,
+            "files": {
+              "o0": {
+                "slim": "assets/avatar/us/3/f/top_o0_slim.svg",
+                "normal": "assets/avatar/us/3/f/top_o0_normal.svg",
+                "heavy": "assets/avatar/us/3/f/top_o0_heavy.svg"
+              },
+              "o1": {
+                "slim": "assets/avatar/us/3/f/top_o1_slim.svg",
+                "normal": "assets/avatar/us/3/f/top_o1_normal.svg",
+                "heavy": "assets/avatar/us/3/f/top_o1_heavy.svg"
+              },
+              "o2": {
+                "slim": "assets/avatar/us/3/f/top_o2_slim.svg",
+                "normal": "assets/avatar/us/3/f/top_o2_normal.svg",
+                "heavy": "assets/avatar/us/3/f/top_o2_heavy.svg"
+              },
+              "o3": {
+                "slim": "assets/avatar/us/3/f/top_o3_slim.svg",
+                "normal": "assets/avatar/us/3/f/top_o3_normal.svg",
+                "heavy": "assets/avatar/us/3/f/top_o3_heavy.svg"
+              },
+              "o4": {
+                "slim": "assets/avatar/us/3/f/top_o4_slim.svg",
+                "normal": "assets/avatar/us/3/f/top_o4_normal.svg",
+                "heavy": "assets/avatar/us/3/f/top_o4_heavy.svg"
+              },
+              "o5": {
+                "slim": "assets/avatar/us/3/f/top_o5_slim.svg",
+                "normal": "assets/avatar/us/3/f/top_o5_normal.svg",
+                "heavy": "assets/avatar/us/3/f/top_o5_heavy.svg"
+              }
+            }
+          },
+          "shoes": {
+            "present": true,
+            "warp": "shift",
+            "optional": false,
+            "files": {
+              "base": {
+                "slim": "assets/avatar/us/3/f/shoes_slim.svg",
+                "normal": "assets/avatar/us/3/f/shoes_normal.svg",
+                "heavy": "assets/avatar/us/3/f/shoes_heavy.svg"
+              },
+              "o3": {
+                "slim": "assets/avatar/us/3/f/shoes_o3_slim.svg",
+                "normal": "assets/avatar/us/3/f/shoes_o3_normal.svg",
+                "heavy": "assets/avatar/us/3/f/shoes_o3_heavy.svg"
+              },
+              "o4": {
+                "slim": "assets/avatar/us/3/f/shoes_o4_slim.svg",
+                "normal": "assets/avatar/us/3/f/shoes_o4_normal.svg",
+                "heavy": "assets/avatar/us/3/f/shoes_o4_heavy.svg"
+              },
+              "o5": {
+                "slim": "assets/avatar/us/3/f/shoes_o5_slim.svg",
+                "normal": "assets/avatar/us/3/f/shoes_o5_normal.svg",
+                "heavy": "assets/avatar/us/3/f/shoes_o5_heavy.svg"
+              }
+            }
+          },
+          "head": {
+            "present": true,
+            "warp": "head",
+            "optional": false,
+            "files": {
+              "base": "assets/avatar/us/3/f/head.svg"
+            }
+          },
+          "glasses": {
+            "present": true,
+            "warp": "head",
+            "optional": true,
+            "files": {
+              "base": "assets/avatar/us/3/f/glasses.svg"
+            }
+          },
+          "hair_front": {
+            "present": true,
+            "warp": "head",
+            "optional": false,
+            "files": {
+              "h1": "assets/avatar/us/3/f/hair_front_h1.svg",
+              "h2": "assets/avatar/us/3/f/hair_front_h2.svg",
+              "h3": "assets/avatar/us/3/f/hair_front_h3.svg",
+              "h4": "assets/avatar/us/3/f/hair_front_h4.svg"
+            }
           }
         }
       }

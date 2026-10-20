@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSQLiteContext } from 'expo-sqlite';
 import { getSetting, setSetting } from '@/db';
+import { useT } from '@/components/Settings';
 
 // 標記碼:畫面上每個功能區塊角落的 3 碼小標籤(例如 P12),方便用代碼溝通要改哪裡。
 // 對照表見 docs/codes.md。新增畫面或區塊時,請一併加上標籤並更新對照表。
@@ -41,13 +42,14 @@ export function useTags() {
  * 關閉時變成半透明的小圓點,不會擋到畫面。
  */
 export function TagsToggle() {
+  const t = useT();
   const { show, setShow } = useTags();
   const insets = useSafeAreaInsets();
   return (
     <Pressable
       onPress={() => setShow(!show)}
       accessibilityRole="switch"
-      accessibilityLabel="顯示或隱藏標記碼"
+      accessibilityLabel={t('顯示或隱藏標記碼')}
       hitSlop={8}
       style={{
         position: 'absolute',
@@ -65,7 +67,7 @@ export function TagsToggle() {
         borderColor: '#ffffffcc',
       }}
     >
-      <Text style={{ color: '#fff', fontSize: 11, fontWeight: '800' }}>{show ? '碼' : '○'}</Text>
+      <Text style={{ color: '#fff', fontSize: 11, fontWeight: '800' }}>{show ? t('碼') : '○'}</Text>
     </Pressable>
   );
 }

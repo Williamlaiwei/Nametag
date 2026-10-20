@@ -1,7 +1,7 @@
-import { LAYERS, toCanvas, DEFAULT_COLORS } from './us-male.source.mjs';
-import { warpPath, shiftPath, pathCenterX, shade, BUILD_SCALES } from '../../src/lib/avatar/warp.ts';
+import { pathCenterX, BUILD_SCALES, VIEW_TOP, VIEW_H } from '../../src/lib/avatar/warp.ts';
+import { pickShapes, resolveColor, layerPath, heightWarp } from '../../src/lib/avatar/compose.ts';
 
-export { BUILD_SCALES, DEFAULT_COLORS };
+export { BUILD_SCALES, pickShapes, heightWarp, VIEW_TOP, VIEW_H };
 
 function mapPairs(d, fn) {
   const t = d.match(/[MLCZ]|-?\d*\.?\d+/g);
@@ -17,69 +17,67 @@ function mapPairs(d, fn) {
   return o.join(' ');
 }
 
-/** 參考圖座標 → 1000×1400 畫布座標 */
-export function canvasLayers() {
+/** 來源座標 → 1000×1400 畫布座標 */
+export function canvasLayers(ch) {
+  const { LAYERS, toCanvas } = ch.src;
   return LAYERS.map((l) => ({
     id: l.id,
     warp: l.warp,
     optional: l.optional ?? false,
     note: l.note,
-    shapes: l.shapes
-      ? l.shapes.map((s) => {
-          const d = mapPairs(s.d, (x, y) => [toCanvas.x(x), toCanvas.y(y)]);
-          const out = { d, fill: s.fill, stroke: s.stroke, sw: Math.round(s.sw * toCanvas.k * 10) / 10 };
-          if (l.warp === 'shift') out.cx = Math.round(pathCenterX(d));
-          return out;
-        })
+    variants: l.variants
+      ? Object.fromEntries(
+          Object.entries(l.variants).map(([key, shapes]) => [
+            key,
+            shapes.map((s) => {
+              const d = mapPairs(s.d, (x, y) => [toCanvas.x(x), toCanvas.y(y)]);
+              const out = { d, fill: s.fill, stroke: s.stroke, sw: Math.round(s.sw * toCanvas.k * 10) / 10 };
+              if (s.nf) out.nf = true;
+              if (l.warp === 'shift') out.cx = Math.round(pathCenterX(d));
+              return out;
+            }),
+          ]),
+        )
       : null,
   }));
 }
 
-/** 顏色角色的名字 → 實際顏色 */
-export function resolveColor(v, c) {
-  switch (v) {
-    case 'skin': return c.skin;
-    case 'skinShade': return shade(c.skin, -0.16);
-    case 'hair': return c.hair;
-    case 'hairShade': return shade(c.hair, -0.28);
-    case 'top': return c.top;
-    case 'topShade': return shade(c.top, -0.2);
-    case 'bottom': return c.bottom;
-    case 'bottomShade': return shade(c.bottom, -0.2);
-    default: return v;
-  }
-}
-
-export function warpedD(layer, shape, w) {
-  if (layer.warp === 'body') return warpPath(shape.d, w);
-  if (layer.warp === 'shift') return shiftPath(shape.d, w, shape.cx);
-  return shape.d;
-}
-
-export function layerSvgGroup(layer, w, colors, withRoles = true) {
-  if (!layer.shapes) return '';
-  const body = layer.shapes
+function groupSvg(layer, shapes, w, hw, fig, colors, withRoles) {
+  const body = shapes
     .map((s) => {
       const fill = resolveColor(s.fill, colors);
       const stroke = s.stroke === 'none' ? 'none' : resolveColor(s.stroke, colors);
       const roles = withRoles ? ` data-fill="${s.fill}" data-stroke="${s.stroke}"` : '';
-      return `    <path d="${warpedD(layer, s, w)}" fill="${fill}" stroke="${stroke}" stroke-width="${s.sw}" stroke-linejoin="round" stroke-linecap="round"${roles}/>`;
+      return `    <path d="${layerPath(layer, s, w, hw, fig)}" fill="${fill}" stroke="${stroke}" stroke-width="${s.sw}" stroke-linejoin="round" stroke-linecap="round"${roles}/>`;
     })
     .join('\n');
   return `  <g id="${layer.id}">\n${body}\n  </g>`;
 }
 
-const HEAD = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1400" width="1000" height="1400">';
+const open = (tall) =>
+  tall
+    ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 ${VIEW_TOP} 1000 ${VIEW_H}" width="1000" height="${VIEW_H}">`
+    : '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1400" width="1000" height="1400">';
 
-export function layerSvg(layer, w, colors) {
-  return `${HEAD}\n${layerSvgGroup(layer, w, colors)}\n</svg>\n`;
+
+/** 單層 SVG(給 build 用) */
+export function layerFileSvg(ch, layer, shapes, w, colors) {
+  return `${open(false)}\n${groupSvg(layer, shapes, w, heightWarp(0.5, ch.zones), undefined, colors, true)}\n</svg>\n`;
 }
 
-export function composeSvg(layers, w, colors, { glasses = false, background = null } = {}) {
-  const bg = background ? `  <rect width="1000" height="1400" fill="${background}"/>\n` : '';
+/** 合成:sel 選髮型 / 服裝 / 眼鏡 / 身材;height 0–1;tall 為 true 時用較高的畫布(留頭頂空間) */
+export function composeSvg(ch, layers, sel, w, height, colors, { tall = false, only = null } = {}) {
+  const hw = heightWarp(height, ch.zones);
+  const fig = { kind: ch.figureKind, amount: sel.figure ?? 0 };
   const groups = layers
-    .filter((l) => l.shapes && (!l.optional || glasses))
-    .map((l) => layerSvgGroup(l, w, colors, false))
+    .filter((l) => !only || only.includes(l.id))
+    .map((l) => [l, pickShapes(l, sel)])
+    .filter(([, shapes]) => shapes)
+    .map(([l, shapes]) => groupSvg(l, shapes, w, hw, fig, colors, false))
     .join('\n');
-  return `${HEAD}\n${bg}${groups}\n</svg>\n`;
+  return `${open(tall)}\n${groups}\n</svg>\n`;
+}
+
+export function innerOf(svg) {
+  return svg.replace(/^<svg[^>]*>/, '').replace('</svg>', '');
 }

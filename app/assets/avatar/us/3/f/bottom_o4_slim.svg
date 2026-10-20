@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1400" width="1000" height="1400">
+  <g id="bottom">
+    <path d="M 418.4 672 L 411.8 729.4 L 408.4 788.3 L 406.8 876.6 L 410.1 964.9 L 403.8 1053.2 L 400.6 1171 L 400 1232.8 L 455.8 1232.8 L 460.7 1171 L 468.8 1053.2 L 473.8 964.9 L 487.7 876.6 L 500 797.1 L 512.3 876.6 L 526.2 964.9 L 531.2 1053.2 L 539.3 1171 L 544.2 1232.8 L 600 1232.8 L 599.4 1171 L 596.2 1053.2 L 589.9 964.9 L 593.2 876.6 L 591.6 788.3 L 588.2 729.4 L 581.6 672 Z" fill="#4F78AA" stroke="#3B211B" stroke-width="4.9" stroke-linejoin="round" stroke-linecap="round" data-fill="bottom" data-stroke="#3B211B"/>
+    <path d="M 420.5 685.2 L 579.5 685.2" fill="none" stroke="#3f6088" stroke-width="3.8" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="bottomShade"/>
+    <path d="M 500 685.2 L 500 788.3" fill="none" stroke="#3f6088" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="bottomShade"/>
+    <path d="M 435.3 788.3 C 432.9 935.5 430.6 1082.7 430.6 1229.9" fill="none" stroke="#3f6088" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="bottomShade"/>
+    <path d="M 564.7 788.3 C 567.1 935.5 569.4 1082.7 569.4 1229.9" fill="none" stroke="#3f6088" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="bottomShade"/>
+  </g>
+</svg>

@@ -7,6 +7,7 @@ import { addToRoster, getGathering, joinGathering, saveExchangedIntro } from '@/
 import { parseScanned } from '@/lib/intro';
 import { Button } from '@/components/ui';
 import { colors } from '@/theme';
+import { useT } from '@/components/Settings';
 
 /**
  * 掃碼入口:
@@ -14,6 +15,7 @@ import { colors } from '@/theme';
  * - 沒帶:互掃交換(存成認識的人),或掃聚會碼加入聚會
  */
 export default function ScanScreen() {
+  const t = useT();
   const db = useSQLiteContext();
   const { gatheringId } = useLocalSearchParams<{ gatheringId?: string }>();
   const [permission, requestPermission] = useCameraPermissions();
@@ -23,8 +25,8 @@ export default function ScanScreen() {
   if (!permission.granted) {
     return (
       <View style={styles.center}>
-        <Text style={{ color: colors.ink, textAlign: 'center', marginBottom: 16 }}>掃描 QR 碼需要使用相機。</Text>
-        <Button title="允許使用相機" onPress={requestPermission} code="F01" />
+        <Text style={{ color: colors.ink, textAlign: 'center', marginBottom: 16 }}>{t('掃描 QR 碼需要使用相機。')}</Text>
+        <Button title={t('允許使用相機')} onPress={requestPermission} code="F01" />
       </View>
     );
   }
@@ -38,13 +40,13 @@ export default function ScanScreen() {
     const scanned = parseScanned(data);
 
     if (scanned.kind === 'unknown') {
-      Alert.alert('不認得這個 QR 碼', '請掃描 Partyking 的 QR 碼。', [{ text: '好', onPress: release }]);
+      Alert.alert(t('不認得這個 QR 碼'), t('請掃描 Partyking 的 QR 碼。'), [{ text: t('好'), onPress: release }]);
       return;
     }
 
     if (scanned.kind === 'gathering') {
       if (scanned.endsAt < Date.now()) {
-        Alert.alert('這場聚會已經結束', undefined, [{ text: '好', onPress: release }]);
+        Alert.alert(t('這場聚會已經結束'), undefined, [{ text: t('好'), onPress: release }]);
         return;
       }
       await joinGathering(db, scanned.id, scanned.title, scanned.endsAt, scanned.cloud);
@@ -56,14 +58,14 @@ export default function ScanScreen() {
     if (gatheringId) {
       const g = await getGathering(db, gatheringId);
       if (!g || g.role !== 'creator') {
-        Alert.alert('只有聚會建立者可以加入名單', undefined, [{ text: '好', onPress: release }]);
+        Alert.alert(t('只有聚會建立者可以加入名單'), undefined, [{ text: t('好'), onPress: release }]);
         return;
       }
       const added = await addToRoster(db, gatheringId, scanned.intro);
-      const who = scanned.intro.fields.nickname ?? '這位賓客';
-      Alert.alert(added ? `已加入:${who}` : `已更新:${who}`, '可以繼續掃下一位。', [
-        { text: '繼續', onPress: release },
-        { text: '完成', onPress: () => router.back() },
+      const who = scanned.intro.fields.nickname ?? t('這位賓客');
+      Alert.alert(added ? t('已加入:{0}', who) : t('已更新:{0}', who), t('可以繼續掃下一位。'), [
+        { text: t('繼續'), onPress: release },
+        { text: t('完成'), onPress: () => router.back() },
       ]);
       return;
     }
@@ -83,7 +85,7 @@ export default function ScanScreen() {
       />
       <View style={styles.hint}>
         <Text style={{ color: '#fff', textAlign: 'center' }}>
-          {gatheringId ? '掃描賓客的 QR 碼,加進名單' : '對準對方的 QR 碼或聚會碼'}
+          {gatheringId ? t('掃描賓客的 QR 碼,加進名單') : t('對準對方的 QR 碼或聚會碼')}
         </Text>
       </View>
     </View>

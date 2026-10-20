@@ -33,6 +33,7 @@ export type FaceConfig = {
   outfit: number; // 0–5,見 capture.ts 的 MALE_OUTFIT / FEMALE_OUTFIT
   figure: number; // 身材 0–3:0 一般,越大越明顯(女:曲線,男:肌肉)
   age: number; // 年紀階段 0–5,見 AGE_STAGES;每個階段的設計不同
+  years?: number; // 進階模式選的歲數(5–80);沒有就是只選了階段
 };
 
 export const DEFAULT_FACE: FaceConfig = {
@@ -111,7 +112,7 @@ export function FaceAvatar({
   const bw = 13 + bi * 2.6; // 軀幹半寬
   const fig = Math.min(FIGURE_STEPS - 1, Math.max(0, face.figure ?? 0)) / (FIGURE_STEPS - 1);
   const sw = female ? bw : bw + 2.4 * fig; // 肩寬:男生往上加變寬
-  const ww = bw * 0.86 - (female ? 3.2 * fig : 0); // 腰寬:女生往上加變窄
+  const ww = female ? bw * 0.82 - 2.4 * fig : bw * 0.88; // 腰寬:女生本來就比肩窄,往上加更窄
   const legLen = 22 + height * 10; // 腳底最多到 y≈135,留空間給鞋子
   const shoulderY = 60;
   const waistY = 96;
@@ -127,14 +128,54 @@ export function FaceAvatar({
   const limb = (x: number, y: number, dx: number, len: number, w0: number, w1: number, k: number) =>
     `M${x - w0 / 2} ${y} L${x + w0 / 2} ${y} Q${x + w0 / 2 + dx * 0.5} ${y + len * 0.5} ${x + dx + w1 / 2} ${y + len * k} L${x + dx - w1 / 2} ${y + len * k} Q${x - w0 / 2 + dx * 0.5} ${y + len * 0.5} ${x - w0 / 2} ${y} Z`;
   /** 單腿:side -1 左、1 右;frac 是腿的長度比例(褲子用)。 */
-  const leg = (side: -1 | 1, frac: number) => {
+  const leg = (side: -1 | 1, frac: number, topInset = 0) => {
     const xi = 50 + side * 0.6;
-    const xo = 50 + side * (hipHalf + 0.2);
+    const xo = 50 + side * (hipHalf + 0.2 - topInset);
     const t = frac;
     const xo2 = xo + (50 + side * (hipHalf * 0.55 + legBotW / 2) - xo) * t;
     const xi2 = xi + (50 + side * (hipHalf * 0.55 - legBotW / 2) - xi) * t;
     const yb = legTop + legLen * frac;
     return `M${xi} ${legTop - 1} L${xo} ${legTop - 1} Q${xo2 + side * 1.5} ${legTop + (yb - legTop) * 0.5} ${xo2} ${yb} L${xi2} ${yb} Q${xi2 - side * 1} ${legTop + (yb - legTop) * 0.5} ${xi} ${legTop - 1} Z`;
+  };
+
+  // 軀幹輪廓:肩線順著斜肩,往下收到腰、再放到臀;女生的胸圍與腰臀隨身材變明顯。
+  const neckHalf = 6;
+  const chestW = female ? sw * 0.97 + 1.8 * fig : sw * 0.95;
+  const waistW = ww;
+  const hipW = hipHalf;
+  const waistN = waistY - 3; // 腰最窄的位置
+  const hipY = waistY + 7;
+  /** 軀幹:肩線順著斜肩,收到腰、放到臀;hem = 'hip' 到臀部,'skirt' 往下展開成裙擺(禮服)。 */
+  const torsoPath = (hem: 'hip' | 'skirt') => {
+    const R = (d: number) => 50 + d;
+    const L = (d: number) => 50 - d;
+    const hemW = hipW - 0.6; // T 恤下擺:幾乎到臀的最寬處,褲頭才不會從兩側露出來
+    const endX = hem === 'hip' ? hemW : sw + 10;
+    const endY = hem === 'hip' ? hipY : 116;
+    const lower =
+      hem === 'hip'
+        ? [[waistW, waistN + 5], [hemW, hipY - 7]]
+        : [[waistW + 1, waistN + 12], [hipW + 4, hipY + 4]];
+    const [c1, c2] = lower;
+    return (
+      `M${R(neckHalf)} ${shoulderY} L${R(sw - 2.5)} ${shoulderY + 0.5} Q${R(sw)} ${shoulderY + 0.5} ${R(sw)} ${shoulderY + 4.5} ` +
+      `C${R(chestW)} ${shoulderY + 14} ${R(waistW + 2)} ${waistN - 9} ${R(waistW)} ${waistN} ` +
+      `C${R(c1[0])} ${c1[1]} ${R(c2[0])} ${c2[1]} ${R(endX)} ${endY} ` +
+      `L${L(endX)} ${endY} ` +
+      `C${L(c2[0])} ${c2[1]} ${L(c1[0])} ${c1[1]} ${L(waistW)} ${waistN} ` +
+      `C${L(waistW + 2)} ${waistN - 9} ${L(chestW)} ${shoulderY + 14} ${L(sw)} ${shoulderY + 4.5} ` +
+      `Q${L(sw)} ${shoulderY + 0.5} ${L(sw - 2.5)} ${shoulderY + 0.5} Z`
+    );
+  };
+  /** 手臂 / 袖子:上端順著肩膀圓起來,往下略往外張。 */
+  const armShape = (side: -1 | 1, len: number, w0: number, w1: number) => {
+    const x0 = 50 + side * (sw - 1);
+    const y0 = shoulderY + 0.5;
+    const inX = x0 - side * (w0 / 2);
+    const outX = x0 + side * (w0 / 2);
+    const dx = side * 3.5 * (len / armLen);
+    const y1 = shoulderY + 3 + len;
+    return `M${inX} ${y0 + 4} Q${inX} ${y0} ${x0} ${y0} Q${outX} ${y0} ${outX} ${y0 + 4} L${x0 + dx + side * (w1 / 2)} ${y1} L${x0 + dx - side * (w1 / 2)} ${y1} Z`;
   };
 
   // 服裝:袖長 / 褲長 / 禮服
@@ -156,22 +197,19 @@ export function FaceAvatar({
 
       {/* 後面的頭髮(女生短髮到長髮、男生長髮) */}
       {(female ? femaleEnd > 0 : maleLong) && (
-        <Rect
-          x="31.5"
-          y="14"
-          width="37"
-          height={(female ? femaleEnd : 60) - 14}
-          rx="14"
+        <Path
+          d={`M33.4 34 L66.6 34 L67.5 ${(female ? femaleEnd : 60) - 10} Q67.5 ${female ? femaleEnd : 60} 57.5 ${female ? femaleEnd : 60} L42.5 ${female ? femaleEnd : 60} Q32.5 ${female ? femaleEnd : 60} 32.5 ${(female ? femaleEnd : 60) - 10} Z`}
           fill={hair}
           stroke={LINE}
           strokeWidth={LW}
+          strokeLinejoin="round"
         />
       )}
 
       {/* 手臂(膚色),袖子之後再蓋上去 */}
       <G stroke={LINE} strokeWidth={LW} strokeLinejoin="round">
-        <Path d={limb(50 - sw + 1, shoulderY + 3, -3.5, armLen, armW, armW * 0.72, 1)} fill={skin} />
-        <Path d={limb(50 + sw - 1, shoulderY + 3, 3.5, armLen, armW, armW * 0.72, 1)} fill={skin} />
+        <Path d={armShape(-1, armLen, armW, armW * 0.72)} fill={skin} />
+        <Path d={armShape(1, armLen, armW, armW * 0.72)} fill={skin} />
       </G>
 
       {/* 腿(膚色),褲子再蓋上去 */}
@@ -187,35 +225,22 @@ export function FaceAvatar({
       {/* 下身 */}
       {pantsLen > 0 && (
         <G fill={bottom} stroke={LINE} strokeWidth={LW} strokeLinejoin="round">
-          <Path d={leg(-1, pantsLen)} />
-          <Path d={leg(1, pantsLen)} />
+          <Path d={leg(-1, pantsLen, 0.8)} />
+          <Path d={leg(1, pantsLen, 0.8)} />
         </G>
       )}
 
       {/* 軀幹 / 禮服 */}
-      {dress ? (
-        <G stroke={LINE} strokeWidth={LW} strokeLinejoin="round">
-          <Path
-            d={`M${50 - sw} ${shoulderY + 3} Q${50 - sw} ${shoulderY} ${50 - sw + 5} ${shoulderY} L${50 + sw - 5} ${shoulderY} Q${50 + sw} ${shoulderY} ${50 + sw} ${shoulderY + 3} L${50 + sw * 0.84} ${waistY - 4} Q${50 + sw + 14} 110 ${50 + sw + 11} 116 L${50 - sw - 11} 116 Q${50 - sw - 14} 110 ${50 - sw * 0.84} ${waistY - 4} Z`}
-            fill={top}
-          />
-          <Path d={`M${50 - sw * 0.84} ${waistY - 6} L${50 + sw * 0.84} ${waistY - 6}`} stroke={bottom} strokeWidth="3" />
-        </G>
-      ) : (
-        <Path
-          d={`M${50 - sw} ${shoulderY + 4} Q${50 - sw} ${shoulderY} ${50 - sw + 5} ${shoulderY} L${50 + sw - 5} ${shoulderY} Q${50 + sw} ${shoulderY} ${50 + sw} ${shoulderY + 4} L${50 + sw * 0.86} ${waistY} L${50 + hipHalf} ${waistY + 7} L${50 - hipHalf} ${waistY + 7} L${50 - sw * 0.86} ${waistY} Z`}
-          fill={top}
-          stroke={LINE}
-          strokeWidth={LW}
-          strokeLinejoin="round"
-        />
+      <Path d={torsoPath(dress ? 'skirt' : 'hip')} fill={top} stroke={LINE} strokeWidth={LW} strokeLinejoin="round" />
+      {dress && (
+        <Path d={`M${50 - waistW} ${waistN} Q50 ${waistN + 1.5} ${50 + waistW} ${waistN}`} stroke={bottom} strokeWidth="3" fill="none" strokeLinecap="round" />
       )}
 
       {/* 袖子 */}
       {!sleeveless && (
         <G fill={top} stroke={LINE} strokeWidth={LW} strokeLinejoin="round">
-          <Path d={limb(50 - sw + 1, shoulderY + 3, -3.5, armLen * sleeveFrac, armW + 1, armW * (longSleeve ? 0.8 : 1), 1)} />
-          <Path d={limb(50 + sw - 1, shoulderY + 3, 3.5, armLen * sleeveFrac, armW + 1, armW * (longSleeve ? 0.8 : 1), 1)} />
+          <Path d={armShape(-1, armLen * sleeveFrac, armW + 1.2, armW * (longSleeve ? 0.8 : 1) + 0.8)} />
+          <Path d={armShape(1, armLen * sleeveFrac, armW + 1.2, armW * (longSleeve ? 0.8 : 1) + 0.8)} />
         </G>
       )}
       {o === (female ? FORMAL_INDEX.female : FORMAL_INDEX.male) && (

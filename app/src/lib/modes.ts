@@ -9,12 +9,6 @@ export const MODES: { id: ModeId; name: string; note: string }[] = [
   { id: 'host', name: '主辦', note: '公開給賓客看,沒有私人評價' },
 ];
 
-export const DEFAULT_MODE: ModeId = 'life';
-
-export function isModeId(v: string | null | undefined): v is ModeId {
-  return MODES.some((m) => m.id === v);
-}
-
 // 約會版的好感度範圍。生活版的重要度仍是 0.5–5 星(見 score.ts)。
 export const LIKING_MIN = -5;
 export const LIKING_MAX = 99;

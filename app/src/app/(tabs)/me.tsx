@@ -16,6 +16,7 @@ import {
   type MyIntro,
 } from '@/lib/intro';
 import { getDeviceCode, getMyIntro, getSetting, saveMyIntro, setSetting } from '@/db';
+import { useT } from '@/components/Settings';
 import { Tag, useTags } from '@/components/Tag';
 import { Button, Card, code, Field, Label, Row, Screen, Toggle } from '@/components/ui';
 import { colors } from '@/theme';
@@ -33,6 +34,7 @@ function byteLength(s: string): number {
 //          星座、血型、最愛的食物、Instagram、LINE、Facebook、Threads、X)
 //   D35 App 解鎖開關 / D36 顯示標記碼開關
 export default function MeScreen() {
+  const t = useT();
   const db = useSQLiteContext();
   const { show, setShow } = useTags();
   const [intro, setIntro] = useState<MyIntro>(emptyIntro);
@@ -75,7 +77,7 @@ export default function MeScreen() {
     if (on) {
       const ok = (await LocalAuthentication.hasHardwareAsync()) && (await LocalAuthentication.isEnrolledAsync());
       if (!ok) {
-        Alert.alert('無法開啟', '這支手機沒有設定螢幕鎖定、指紋或臉部辨識。');
+        Alert.alert(t('無法開啟'), t('這支手機沒有設定螢幕鎖定、指紋或臉部辨識。'));
         return;
       }
     }
@@ -89,21 +91,21 @@ export default function MeScreen() {
   return (
     <Screen>
       <Card>
-        <Label>我的 QR 碼(給對方掃,或主辦人掃)</Label>
+        <Label>{t('我的 QR 碼(給對方掃,或主辦人掃)')}</Label>
         <View style={{ alignItems: 'center', padding: 12 }}>
           {payload && !tooBig ? (
             <QRCode value={payload} size={200} ecl="L" />
           ) : (
             <Text style={{ color: colors.danger, textAlign: 'center' }}>
-              要分享的內容太多,QR 碼放不下。請關掉幾個欄位的分享開關。
+              {t('要分享的內容太多,QR 碼放不下。請關掉幾個欄位的分享開關。')}
             </Text>
           )}
         </View>
-        <Button title="掃描對方的 QR 碼" onPress={() => router.push('/scan' as never)} code="D01" />
+        <Button title={t('掃描對方的 QR 碼')} onPress={() => router.push('/scan' as never)} code="D01" />
       </Card>
 
       <Card>
-        <Label>自拍(只存在這支手機,目前不會放進 QR 碼)</Label>
+        <Label>{t('自拍(只存在這支手機,目前不會放進 QR 碼)')}</Label>
         <Row>
           <Pressable onPress={pickSelfie}>
             {intro.selfieUri ? (
@@ -119,7 +121,7 @@ export default function MeScreen() {
                   justifyContent: 'center',
                 }}
               >
-                <Text style={{ color: colors.primary }}>選照片</Text>
+                <Text style={{ color: colors.primary }}>{t('選照片')}</Text>
               </View>
             )}
             <Tag code="D02" />
@@ -129,7 +131,7 @@ export default function MeScreen() {
 
       {INTRO_GROUPS.map((g) => (
         <Card key={g.title}>
-          <Label>{g.title}</Label>
+          <Label>{t(g.title)}</Label>
           {g.keys.map((k) => {
             const n = ALL_KEYS.indexOf(k);
             return (
@@ -137,9 +139,9 @@ export default function MeScreen() {
                 <View style={{ flex: 1 }}>
                   <Field
                     code={code('D', 3 + n * 2)}
-                    placeholder={INTRO_LABELS[k]}
+                    placeholder={t(INTRO_LABELS[k])}
                     value={intro.values[k]}
-                    onChangeText={(t) => setValue(k, t)}
+                    onChangeText={(v) => setValue(k, v)}
                     autoCapitalize="none"
                   />
                 </View>
@@ -155,14 +157,14 @@ export default function MeScreen() {
         </Card>
       ))}
       <Text style={{ color: colors.muted, fontSize: 12, marginBottom: 16 }}>
-        右邊的開關決定這一項會不會被別人看到。全部都可以留空,社交帳號預設關閉。
+        {t('右邊的開關決定這一項會不會被別人看到。全部都可以留空,社交帳號預設關閉。')}
       </Text>
 
       <Card>
         <Row style={{ justifyContent: 'space-between' }}>
           <View style={{ flex: 1, paddingRight: 12 }}>
-            <Text style={{ color: colors.ink, fontSize: 16 }}>開啟 App 時需要解鎖</Text>
-            <Text style={{ color: colors.muted, fontSize: 12 }}>手機被別人拿到時,看不到你給誰打了幾顆星</Text>
+            <Text style={{ color: colors.ink, fontSize: 16 }}>{t('開啟 App 時需要解鎖')}</Text>
+            <Text style={{ color: colors.muted, fontSize: 12 }}>{t('手機被別人拿到時,看不到你給誰打了幾顆星')}</Text>
           </View>
           <Toggle value={lock} onValueChange={toggleLock} code="D35" />
         </Row>
@@ -171,8 +173,8 @@ export default function MeScreen() {
       <Card>
         <Row style={{ justifyContent: 'space-between' }}>
           <View style={{ flex: 1, paddingRight: 12 }}>
-            <Text style={{ color: colors.ink, fontSize: 16 }}>顯示標記碼</Text>
-            <Text style={{ color: colors.muted, fontSize: 12 }}>每個可以互動的東西角落的 3 碼小標籤,用來溝通要改哪裡</Text>
+            <Text style={{ color: colors.ink, fontSize: 16 }}>{t('顯示標記碼')}</Text>
+            <Text style={{ color: colors.muted, fontSize: 12 }}>{t('每個可以互動的東西角落的 3 碼小標籤,用來溝通要改哪裡')}</Text>
           </View>
           <Toggle value={show} onValueChange={setShow} code="D36" />
         </Row>

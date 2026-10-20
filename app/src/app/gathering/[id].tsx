@@ -32,12 +32,14 @@ import {
 import { Tag } from '@/components/Tag';
 import { Button, Card, Empty, Label, Row, Screen } from '@/components/ui';
 import { colors } from '@/theme';
+import { useT } from '@/components/Settings';
 
 // 名單上的一列,不論來自雲端或主辦人手機。
 type Entry = { key: string; intro: PublicIntro; mine: boolean; remove: () => Promise<void> };
 type SubmitState = 'idle' | 'sending' | 'sent' | 'failed' | 'left';
 
 export default function GatheringScreen() {
+  const t = useT();
   const db = useSQLiteContext();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [g, setG] = useState<Gathering | null>(null);
@@ -88,7 +90,7 @@ export default function GatheringScreen() {
         setCloudError('');
         setCloudRoster(m);
       },
-      () => setCloudError('連不上雲端,顯示的可能不是最新名單。'),
+      () => setCloudError(t('連不上雲端,顯示的可能不是最新名單。')),
     );
   }, [useCloud, id]);
 
@@ -109,7 +111,7 @@ export default function GatheringScreen() {
     if (g && g.role === 'guest' && useCloud && g.endsAt > Date.now() && submit === 'idle') sendIntro();
   }, [g, useCloud, submit, sendIntro]);
 
-  if (!g) return <Screen>{<Empty text="找不到這場聚會(可能已過期並被刪除)" />}</Screen>;
+  if (!g) return <Screen>{<Empty text={t('找不到這場聚會(可能已過期並被刪除)')} />}</Screen>;
 
   const ended = g.endsAt < Date.now();
   const isCreator = g.role === 'creator';
@@ -123,17 +125,17 @@ export default function GatheringScreen() {
         await (m.mine ? leaveGathering(g.id) : removeMember(g.id, m.uid));
         if (m.mine) setSubmit('left');
       } catch {
-        Alert.alert('刪除失敗', '請確認網路後再試一次。');
+        Alert.alert(t('刪除失敗'), t('請確認網路後再試一次。'));
       }
     },
   }));
   const roster = [...cloudEntries, ...localRoster];
 
   const removeGathering = () =>
-    Alert.alert('刪除這場聚會?', '你手機上的名單會一併刪除。已經存進「認識的人」的資料不受影響。', [
-      { text: '取消', style: 'cancel' },
+    Alert.alert(t('刪除這場聚會?'), t('你手機上的名單會一併刪除。已經存進「認識的人」的資料不受影響。'), [
+      { text: t('取消'), style: 'cancel' },
       {
-        text: '刪除',
+        text: t('刪除'),
         style: 'destructive',
         onPress: async () => {
           await deleteGathering(db, g.id);
@@ -144,10 +146,10 @@ export default function GatheringScreen() {
 
   const rosterList = (
     <>
-      <Label>聚會名單({roster.length} 人)</Label>
+      <Label>{t('聚會名單({0} 人)', roster.length)}</Label>
       {cloudError ? <Text style={{ color: colors.danger, marginBottom: 8 }}>{cloudError}</Text> : null}
       {roster.length === 0 && (
-        <Empty text={useCloud ? '還沒有人加入。請賓客掃上面的聚會碼。' : '還沒有人。請賓客出示「我」分頁的 QR 碼,你來掃。'} />
+        <Empty text={useCloud ? t('還沒有人加入。請賓客掃上面的聚會碼。') : t('還沒有人。請賓客出示「我」分頁的 QR 碼,你來掃。')} />
       )}
       {roster.map((r) => {
         const f = r.intro.fields;
@@ -157,8 +159,8 @@ export default function GatheringScreen() {
           <Card key={r.key}>
             <Pressable onPress={() => setOpen(expanded ? null : r.key)}>
               <Text style={{ fontSize: 17, fontWeight: '600', color: colors.ink }}>
-                {f.nickname ?? '(未填暱稱)'}
-                {r.mine ? '(我)' : ''}
+                {f.nickname ?? t('(未填暱稱)')}
+                {r.mine ? t('(我)') : ''}
               </Text>
               <Text style={{ color: colors.muted, marginTop: 2 }}>{f.tagline ?? ''}</Text>
               <Tag code="G02" />
@@ -176,7 +178,7 @@ export default function GatheringScreen() {
                 <Row style={{ marginTop: 12 }}>
                   {!r.mine && (
                     <Button
-                      title="記成認識的人"
+                      title={t('記成認識的人')}
                       kind="ghost"
                       onPress={async () => {
                         const pid = await saveExchangedIntro(db, r.intro);
@@ -187,7 +189,7 @@ export default function GatheringScreen() {
                     />
                   )}
                   {canRemove && (
-                    <Button title={r.mine ? '退出名單' : '移除'} kind="danger" onPress={r.remove} code="G04" />
+                    <Button title={r.mine ? t('退出名單') : t('移除')} kind="danger" onPress={r.remove} code="G04" />
                   )}
                 </Row>
               </View>
@@ -201,19 +203,19 @@ export default function GatheringScreen() {
   return (
     <Screen>
       <Stack.Screen options={{ title: g.title }} />
-      {ended && <Text style={{ color: colors.danger, marginBottom: 12 }}>這場聚會已結束,名單即將自動刪除。</Text>}
+      {ended && <Text style={{ color: colors.danger, marginBottom: 12 }}>{t('這場聚會已結束,名單即將自動刪除。')}</Text>}
 
       {isCreator ? (
         <>
           <Card>
-            <Label>聚會碼:給賓客掃描{useCloud ? '(雲端名單)' : '(離線名單)'}</Label>
+            <Label>{t('聚會碼:給賓客掃描')}{useCloud ? t('(雲端名單)') : t('(離線名單)')}</Label>
             <View style={{ alignItems: 'center', padding: 12 }}>
               <QRCode value={encodeGathering({ ...g, cloud: useCloud })} size={200} />
             </View>
           </Card>
           {!useCloud && (
             <Button
-              title="掃描賓客,加進名單"
+              title={t('掃描賓客,加進名單')}
               onPress={() => router.push({ pathname: '/scan', params: { gatheringId: g.id } } as never)}
               style={{ marginBottom: 16 }}
               code="G01"
@@ -223,14 +225,14 @@ export default function GatheringScreen() {
       ) : useCloud ? (
         <Card>
           <Text style={{ color: colors.ink, marginBottom: 8 }}>
-            {submit === 'sending' && '正在送出你的自我介紹…'}
-            {submit === 'sent' && '你的自我介紹已加入名單。只有你開啟分享的欄位會被看到。'}
-            {submit === 'failed' && '送出失敗,可能是沒有網路。'}
-            {submit === 'left' && '你已退出名單,雲端上的介紹已刪除。'}
+            {submit === 'sending' && t('正在送出你的自我介紹…')}
+            {submit === 'sent' && t('你的自我介紹已加入名單。只有你開啟分享的欄位會被看到。')}
+            {submit === 'failed' && t('送出失敗,可能是沒有網路。')}
+            {submit === 'left' && t('你已退出名單,雲端上的介紹已刪除。')}
           </Text>
           {(submit === 'failed' || submit === 'sent' || submit === 'left') && (
             <Button
-              title={submit === 'sent' ? '更新我的介紹' : submit === 'left' ? '重新加入' : '重新送出'}
+              title={submit === 'sent' ? t('更新我的介紹') : submit === 'left' ? t('重新加入') : t('重新送出')}
               kind="ghost"
               onPress={sendIntro}
               disabled={ended}
@@ -240,19 +242,19 @@ export default function GatheringScreen() {
         </Card>
       ) : (
         <Card>
-          <Label>請出示給主辦人掃描,加入這場聚會的名單</Label>
+          <Label>{t('請出示給主辦人掃描,加入這場聚會的名單')}</Label>
           <View style={{ alignItems: 'center', padding: 12 }}>
             {myQr ? <QRCode value={myQr} size={200} ecl="L" /> : null}
           </View>
           <Text style={{ color: colors.muted, fontSize: 12 }}>
-            這場聚會是離線模式,名單由主辦人保管。內容是你在「我」分頁填的自我介紹,只包含你開啟分享的欄位。
+            {t('這場聚會是離線模式,名單由主辦人保管。內容是你在「我」分頁填的自我介紹,只包含你開啟分享的欄位。')}
           </Text>
         </Card>
       )}
 
       {(isCreator || useCloud) && rosterList}
 
-      <Button title="刪除這場聚會" kind="danger" onPress={removeGathering} style={{ marginTop: 16 }} code="G06" />
+      <Button title={t('刪除這場聚會')} kind="danger" onPress={removeGathering} style={{ marginTop: 16 }} code="G06" />
     </Screen>
   );
 }

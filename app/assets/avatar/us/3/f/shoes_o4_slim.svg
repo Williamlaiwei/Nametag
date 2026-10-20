@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1400" width="1000" height="1400">
+  <g id="shoes">
+    <path d="M 418.7 1238.7 L 477.6 1238.7 L 474.7 1274.1 C 459.9 1300.6 412.8 1318.2 371.6 1318.2 C 354 1318.2 351 1300.6 368.7 1288.8 C 392.2 1274.1 409.9 1256.4 418.7 1238.7 Z M 459.9 1277 L 468.8 1332.9 L 454.1 1332.9 L 448.2 1291.7 Z" fill="#1E1C24" stroke="#3B211B" stroke-width="4.9" stroke-linejoin="round" stroke-linecap="round" data-fill="#1E1C24" data-stroke="#3B211B"/>
+    <path d="M 581.3 1238.7 L 522.4 1238.7 L 525.3 1274.1 C 540.1 1300.6 587.2 1318.2 628.4 1318.2 C 646 1318.2 649 1300.6 631.3 1288.8 C 607.8 1274.1 590.1 1256.4 581.3 1238.7 Z M 540.1 1277 L 531.2 1332.9 L 545.9 1332.9 L 551.8 1291.7 Z" fill="#1E1C24" stroke="#3B211B" stroke-width="4.9" stroke-linejoin="round" stroke-linecap="round" data-fill="#1E1C24" data-stroke="#3B211B"/>
+  </g>
+</svg>

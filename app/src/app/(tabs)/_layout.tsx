@@ -1,5 +1,6 @@
 import { Text, type ColorValue } from 'react-native';
 import { Tabs } from 'expo-router';
+import { useSettings, useT } from '@/components/Settings';
 import { useTags } from '@/components/Tag';
 import { colors } from '@/theme';
 
@@ -10,7 +11,9 @@ function icon(glyph: string) {
 // 底部分頁的標記碼:T01 首頁、T02 認識的人、T03 聚會、T04 我、T05 設定(開啟標記碼時顯示在分頁名稱前)
 export default function TabsLayout() {
   const { show } = useTags();
-  const t = (code: string, name: string) => (show ? `${code} ${name}` : name);
+  const { setMode } = useSettings();
+  const tr = useT();
+  const t = (code: string, name: string) => (show ? `${code} ${tr(name)}` : tr(name));
   return (
     <Tabs
       screenOptions={{
@@ -22,7 +25,12 @@ export default function TabsLayout() {
         sceneStyle: { backgroundColor: colors.bg },
       }}
     >
-      <Tabs.Screen name="index" options={{ title: t('T01', '首頁'), tabBarIcon: icon('✎'), headerShown: false }} />
+      <Tabs.Screen
+        name="index"
+        options={{ title: t('T01', '首頁'), tabBarIcon: icon('✎'), headerShown: false }}
+        // 已經在首頁時再按一次首頁分頁 = 回到模式選擇
+        listeners={({ navigation }) => ({ tabPress: () => navigation.isFocused() && setMode(null) })}
+      />
       <Tabs.Screen name="people" options={{ title: t('T02', '認識的人'), tabBarIcon: icon('☺') }} />
       <Tabs.Screen name="gatherings" options={{ title: t('T03', '聚會'), tabBarIcon: icon('◎') }} />
       <Tabs.Screen name="me" options={{ title: t('T04', '我'), tabBarIcon: icon('♥') }} />

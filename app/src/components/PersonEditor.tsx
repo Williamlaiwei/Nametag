@@ -2,6 +2,8 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Pressable, Text, useWindowDimensions, View } from 'react-native';
 import { type PersonDraft } from '@/db';
 import {
+  AGE_MAX_YEARS,
+  AGE_MIN_YEARS,
   AGE_STAGES,
   BUILD_LABELS,
   buildIndex,
@@ -22,6 +24,8 @@ import {
   isFemale,
   lerpHex,
   HAIR_STYLES,
+  stageToYears,
+  yearsToStage,
   MALE_OUTFIT,
   ROUGH_HEIGHT,
   roughIndex,
@@ -39,7 +43,7 @@ import { HookBadges } from './HookBadges';
 import { DEFAULT_FACE, FaceAvatar, parseFace, type FaceConfig } from './Face';
 import { HeatDisc } from './HeatDisc';
 import { SpectrumSlider } from './SpectrumSlider';
-import { useSettings } from './Settings';
+import { useSettings, useT } from './Settings';
 
 function splitHook(hook: string): string[] {
   return hook
@@ -69,6 +73,7 @@ function MiniChip({
   tag: string;
   hold?: (on: boolean) => void; // 按住不放時顯示人物
 }) {
+  const tt = useT();
   return (
     <Pressable
       onPress={onPress}
@@ -85,7 +90,7 @@ function MiniChip({
         marginBottom: 5,
       }}
     >
-      <Text style={{ fontSize: 12, color: selected ? '#fff' : colors.ink }}>{icon ? `${icon} ${label}` : label}</Text>
+      <Text style={{ fontSize: 12, color: selected ? '#fff' : colors.ink }}>{icon ? `${icon} ${tt(label)}` : tt(label)}</Text>
       <Tag code={tag} />
     </Pressable>
   );
@@ -103,11 +108,12 @@ function Row2({
   children: ReactNode;
   right?: ReactNode;
 }) {
+  const tt = useT();
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', minHeight: 38 }}>
       <View style={{ width: 58 }}>
-        <Text style={{ fontSize: 11, color: colors.muted }}>{label}</Text>
-        {value ? <Text style={{ fontSize: 12, color: colors.ink }}>{value}</Text> : null}
+        <Text style={{ fontSize: 11, color: colors.muted }}>{tt(label)}</Text>
+        {value ? <Text style={{ fontSize: 12, color: colors.ink }}>{tt(value)}</Text> : null}
       </View>
       <View style={{ flex: 1 }}>{children}</View>
       {right}
@@ -130,24 +136,29 @@ const GENDER_TRACK = Array.from({ length: GENDER_STEPS }, (_, i) =>
  *   P21–P25 髮型 / P26 膚色 / P27 年紀 / P28 髮色
  *   P29–P36 記憶鉤子標籤 / P37 新增標籤 / P38 新標籤輸入 / P39 名字
  *   P40 小記 / P41 圓盤(熟悉度 × 重要度)/ P42 圓盤(身高 × 體型)
+ *   P43 身材 / P44 年紀精度(粗略 / 歲數)/ P45 年紀 −1 / P46 年紀 +1(P27 是年紀滑桿)
  */
 export function PersonEditor({
   value,
   onChange,
   onActiveChange,
   scoreSlot,
+  hideClothColor,
 }: {
   value: PersonDraft;
   onChange: (p: PersonDraft) => void;
   onActiveChange?: (active: boolean) => void; // 拖動中:外層鎖住頁面捲動
+  hideClothColor?: boolean; // 約會版不需要上衣 / 下身顏色(P13 / P17)
   scoreSlot?: ReactNode; // 有的話取代名字旁的星星(約會版用自己的好感度控制)
 }) {
   const win = useWindowDimensions();
+  const t = useT();
   const { version, style } = useSettings();
   const hookList = VERSIONS[version ?? DEFAULT_VERSION].hooks;
 
   const [mode, setMode] = useState<'face' | 'disc'>('face');
   const [precise, setPrecise] = useState(false);
+  const [preciseAge, setPreciseAge] = useState(false);
   const [tags, setTags] = useState(() => hookList.slice(0, VISIBLE_HOOKS));
   const [adding, setAdding] = useState(false);
   const [newTag, setNewTag] = useState('');
@@ -177,7 +188,10 @@ export function PersonEditor({
   // 身高
   const [lo, hi] = heightRange(face.gender);
   const cm = heightCm(face.gender, value.height);
-  const heightLabel = precise ? `${cm} 公分` : ROUGH_HEIGHT[roughIndex(value.height)];
+  const heightLabel = precise ? t('{0} 公分', cm) : t(ROUGH_HEIGHT[roughIndex(value.height)]);
+  const years = face.years ?? stageToYears(face.age);
+  const setYears = (y: number) => setFace({ years: y, age: yearsToStage(y) });
+  const nudgeAge = (d: number) => setYears(Math.min(AGE_MAX_YEARS, Math.max(AGE_MIN_YEARS, years + d)));
   const nudge = (d: number) =>
     onChange({ ...value, height: heightToT(face.gender, Math.min(hi, Math.max(lo, cm + d))) });
 
@@ -185,10 +199,10 @@ export function PersonEditor({
   const hookWords = splitHook(value.hook);
   const shownTags = [...tags, ...hookWords.filter((w) => !tags.includes(w))];
   const addTag = () => {
-    const t = newTag.trim();
-    if (t) {
-      if (!tags.includes(t)) setTags([...tags, t]);
-      if (!hookWords.includes(t)) onChange({ ...value, hook: toggleHook(value.hook, t) });
+    const tag = newTag.trim();
+    if (tag) {
+      if (!tags.includes(tag)) setTags([...tags, tag]);
+      if (!hookWords.includes(tag)) onChange({ ...value, hook: toggleHook(value.hook, tag) });
     }
     setNewTag('');
     setAdding(false);
@@ -233,8 +247,8 @@ export function PersonEditor({
       y={value.stars / 10}
       onChange={(x, y) => onChange({ ...value, familiarity: x, stars: Math.round(y * 10) })}
       onActive={lock}
-      xLabel="熟悉度"
-      yLabel="重要度"
+      xLabel={t('熟悉度')}
+      yLabel={t('重要度')}
       code={tag}
     />
   );
@@ -245,27 +259,28 @@ export function PersonEditor({
       y={value.build}
       onChange={(x, y) => onChange({ ...value, height: x, build: y })}
       onActive={key ? act(key) : undefined}
-      xLabel="身高"
-      yLabel="體型"
+      xLabel={t('身高')}
+      yLabel={t('體型')}
       code={tag}
     />
   );
 
   // 按住時蓋在最上面的放大版(只看、不接觸控,手指仍在原本的控制項上)
+  const tc = (name: string) => name.split('・').map((x) => t(x)).join('・');
   const info = (key: string): string => {
     switch (key) {
-      case 'gender': return `性別 ${face.gender + 1} / ${GENDER_STEPS}`;
-      case 'height': return `身高 ${heightLabel}`;
-      case 'build': return `體型 ${BUILD_LABELS[buildIndex(value.build)]}`;
-      case 'topHue': return `上衣 ${colorName(face.topHue, face.topLight)}(上下拖 = 亮暗)`;
-      case 'botHue': return `下身 ${colorName(face.botHue, face.botLight)}(上下拖 = 亮暗)`;
-      case 'skin': return `膚色 ${face.skin + 1} / ${skins.length}`;
-      case 'age': return `年紀 ${AGE_STAGES[face.age] ?? ''}`;
-      case 'hairColor': return `髮色 ${face.hairColor + 1} / ${HAIR_COLORS.length}`;
-      case 'discB': return `身高 ${heightLabel}・體型 ${BUILD_LABELS[buildIndex(value.build)]}`;
-      case 'outfit': return `服裝 ${outfits[face.outfit] ?? ''}`;
-      case 'figure': return `${female ? '曲線' : '肌肉'} ${FIGURE_LABELS[face.figure ?? 0]}`;
-      case 'hairStyle': return `髮型 ${HAIR_STYLES[face.hair] ?? ''}`;
+      case 'gender': return `${t('性別')} ${face.gender + 1} / ${GENDER_STEPS}`;
+      case 'height': return `${t('身高')} ${heightLabel}`;
+      case 'build': return `${t('體型')} ${t(BUILD_LABELS[buildIndex(value.build)])}`;
+      case 'topHue': return `${t('上衣')} ${tc(colorName(face.topHue, face.topLight))}${t('(上下拖 = 亮暗)')}`;
+      case 'botHue': return `${t('下身')} ${tc(colorName(face.botHue, face.botLight))}${t('(上下拖 = 亮暗)')}`;
+      case 'skin': return `${t('膚色')} ${face.skin + 1} / ${skins.length}`;
+      case 'age': return `${t('年紀')} ${preciseAge ? t('{0} 歲', years) : t(AGE_STAGES[face.age] ?? '')}`;
+      case 'hairColor': return `${t('髮色')} ${face.hairColor + 1} / ${HAIR_COLORS.length}`;
+      case 'discB': return `${t('身高')} ${heightLabel}・${t('體型')} ${t(BUILD_LABELS[buildIndex(value.build)])}`;
+      case 'outfit': return `${t('服裝')} ${t(outfits[face.outfit] ?? '')}`;
+      case 'figure': return `${female ? t('曲線') : t('肌肉')} ${t(FIGURE_LABELS[face.figure ?? 0])}`;
+      case 'hairStyle': return `${t('髮型')} ${t(HAIR_STYLES[face.hair] ?? '')}`;
       default: return '';
     }
   };
@@ -278,7 +293,7 @@ export function PersonEditor({
       case 'topHue': return slider(COLOR_STEPS, face.topHue, () => {}, 48, hueTrack(face.topLight));
       case 'botHue': return slider(COLOR_STEPS, face.botHue, () => {}, 48, hueTrack(face.botLight));
       case 'skin': return slider(skins.length, face.skin, () => {}, 48, skins);
-      case 'age': return slider(AGE_STAGES.length, face.age, () => {}, 48);
+      case 'age': return preciseAge ? slider(AGE_MAX_YEARS - AGE_MIN_YEARS + 1, years - AGE_MIN_YEARS, () => {}, 48) : slider(AGE_STAGES.length, face.age, () => {}, 48);
       case 'outfit': return slider(outfits.length, face.outfit, () => {}, 48);
       case 'figure': return slider(FIGURE_STEPS, face.figure ?? 0, () => {}, 48);
       case 'hairStyle': return slider(HAIR_STYLES.length, face.hair, () => {}, 48);
@@ -316,7 +331,7 @@ export function PersonEditor({
               backgroundColor: mode === m ? colors.primary : '#fff',
             }}
           >
-            <Text style={{ fontSize: 16, fontWeight: '600', color: mode === m ? '#fff' : colors.ink }}>{label}</Text>
+            <Text style={{ fontSize: 16, fontWeight: '600', color: mode === m ? '#fff' : colors.ink }}>{t(label)}</Text>
             <Tag code={tag} />
           </Pressable>
         ))}
@@ -388,6 +403,8 @@ export function PersonEditor({
         {slider(FIGURE_STEPS, face.figure ?? 0, (i) => setFace({ figure: i }), undefined, undefined, { code: 'P43', key: 'figure' })}
       </Row2>
 
+      {!hideClothColor && (
+        <>
       {/* 上衣:左右選顏色,按住往上拖 = 亮、往下拖 = 暗 */}
       <Row2 label="上衣" value={face.topLight ? '亮 ↑' : '暗 ↓'}>
         {slider(COLOR_STEPS, face.topHue, (i) => setFace({ topHue: i }), undefined, hueTrack(face.topLight), {
@@ -406,6 +423,9 @@ export function PersonEditor({
         })}
       </Row2>
 
+        </>
+      )}
+
       {/* 髮型:光頭 → 長髮 */}
       <Row2 label="髮型" value={HAIR_STYLES[face.hair] ?? ''}>
         {slider(HAIR_STYLES.length, face.hair, (i) => setFace({ hair: i }), undefined, undefined, { code: 'P21', key: 'hairStyle' })}
@@ -416,9 +436,43 @@ export function PersonEditor({
         {slider(skins.length, face.skin, (i) => setFace({ skin: i }), undefined, skins, { code: 'P26', key: 'skin' })}
       </Row2>
 
-      {/* 年紀:6 個階段,每個階段的外觀設計不同(設計稿還沒有) */}
-      <Row2 label="年紀" value={AGE_STAGES[face.age] ?? ''}>
-        {slider(AGE_STAGES.length, face.age, (i) => setFace({ age: i }), undefined, undefined, { code: 'P27', key: 'age' })}
+      {/* 年紀:粗略 = 6 個階段;進階 = 直接選歲數(和身高一樣可切換) */}
+      <Row2
+        label="年紀"
+        value={preciseAge ? t('{0} 歲', years) : (AGE_STAGES[face.age] ?? '')}
+        right={
+          <View style={{ marginLeft: 6 }}>
+            <MiniChip
+              label={preciseAge ? '歲數' : '粗略'}
+              selected={preciseAge}
+              onPress={() => {
+                if (!preciseAge) setFace({ years: stageToYears(face.age) });
+                setPreciseAge(!preciseAge);
+              }}
+              tag="P44"
+            />
+          </View>
+        }
+      >
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          {preciseAge && (
+            <Pressable onPress={() => nudgeAge(-1)} style={{ paddingRight: 8 }}>
+              <Text style={{ fontSize: 22, color: colors.primary }}>‹</Text>
+              <Tag code="P45" />
+            </Pressable>
+          )}
+          <View style={{ flex: 1 }}>
+            {preciseAge
+              ? slider(AGE_MAX_YEARS - AGE_MIN_YEARS + 1, years - AGE_MIN_YEARS, (i) => setYears(i + AGE_MIN_YEARS), undefined, undefined, { code: 'P27', key: 'age' })
+              : slider(AGE_STAGES.length, face.age, (i) => setFace({ age: i, years: undefined }), undefined, undefined, { code: 'P27', key: 'age' })}
+          </View>
+          {preciseAge && (
+            <Pressable onPress={() => nudgeAge(1)} style={{ paddingLeft: 8 }}>
+              <Text style={{ fontSize: 22, color: colors.primary }}>›</Text>
+              <Tag code="P46" />
+            </Pressable>
+          )}
+        </View>
       </Row2>
 
       {/* 髮色:先關閉,用預設髮色 */}
@@ -448,7 +502,7 @@ export function PersonEditor({
               onSubmitEditing={addTag}
               onBlur={() => setAdding(false)}
               autoFocus
-              placeholder="新標籤"
+              placeholder={t('新標籤')}
               style={{ paddingVertical: 4, fontSize: 13 }}
             />
           </View>
@@ -463,23 +517,23 @@ export function PersonEditor({
           <Field
             code="P39"
             value={value.name}
-            onChangeText={(t) => onChange({ ...value, name: t })}
-            placeholder="名字(選填)"
+            onChangeText={(v) => onChange({ ...value, name: v })}
+            placeholder={t('名字(選填)')}
             style={{ paddingVertical: 8 }}
           />
         </View>
         {scoreSlot ?? (
           <View style={{ marginLeft: 8, marginBottom: 10, alignItems: 'center' }}>
             <Stars value={value.stars} size={22} onChange={(v) => onChange({ ...value, stars: v })} code="P04" />
-            <Text style={{ fontSize: 10, color: scoreColor(value.stars) }}>{scoreLabel(value.stars)}</Text>
+            <Text style={{ fontSize: 10, color: scoreColor(value.stars) }}>{t(scoreLabel(value.stars))}</Text>
           </View>
         )}
       </View>
       <Field
         code="P40"
         value={value.note}
-        onChangeText={(t) => onChange({ ...value, note: t })}
-        placeholder="小記(例如:戴眼鏡、聊過登山)"
+        onChangeText={(v) => onChange({ ...value, note: v })}
+        placeholder={t('小記(例如:戴眼鏡、聊過登山)')}
         style={{ paddingVertical: 6, fontSize: 14 }}
       />
 

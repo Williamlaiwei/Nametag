@@ -9,10 +9,12 @@ import { Stars } from '@/components/Stars';
 import { Tag } from '@/components/Tag';
 import { Chip, code, Empty, Field, Row } from '@/components/ui';
 import { colors } from '@/theme';
+import { useT } from '@/components/Settings';
 
 // 標記碼:B01 搜尋框、B02–B05 篩選(全部 / 3 星以上 / 4 星以上 / 還沒打分)、
 //         B06 每一列(點進詳細頁)、B07 每一列上的星星(拖動打分)
 export default function PeopleScreen() {
+  const t = useT();
   const db = useSQLiteContext();
   const [search, setSearch] = useState('');
   const [minScore, setMinScore] = useState(0);
@@ -36,12 +38,12 @@ export default function PeopleScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg, padding: 16 }}>
-      <Field code="B01" value={search} onChangeText={setSearch} placeholder="搜尋名字、記憶鉤子、介紹" />
+      <Field code="B01" value={search} onChangeText={setSearch} placeholder={t('搜尋名字、記憶鉤子、介紹')} />
       <Row style={{ flexWrap: 'wrap' }}>
         {FILTERS.map((f, i) => (
           <Chip
             key={f.label}
-            label={f.label}
+            label={t(f.label)}
             selected={minScore === f.min}
             onPress={() => setMinScore(f.min)}
             code={code('B', 2 + i)}
@@ -52,7 +54,7 @@ export default function PeopleScreen() {
         data={people}
         keyExtractor={(p) => String(p.id)}
         ListEmptyComponent={
-          <Empty text={search || minScore ? '找不到符合的人' : '還沒有記下任何人\n到「快速記錄」記下第一位吧'} />
+          <Empty text={search || minScore ? t('找不到符合的人') : t('還沒有記下任何人\n到「快速記錄」記下第一位吧')} />
         }
         renderItem={({ item }) => (
           <Pressable
@@ -70,9 +72,9 @@ export default function PeopleScreen() {
           >
             <FaceAvatar face={parseFace(item.face)} size={64} build={item.build} height={item.height} />
             <View style={{ marginLeft: 12, flex: 1 }}>
-              <Text style={{ fontSize: 17, fontWeight: '600', color: colors.ink }}>{item.name || '(還不知道名字)'}</Text>
+              <Text style={{ fontSize: 17, fontWeight: '600', color: colors.ink }}>{item.name || t('(還不知道名字)')}</Text>
               <Text numberOfLines={1} style={{ color: colors.muted, marginTop: 2, marginBottom: 4 }}>
-                {item.hook || '沒有記憶鉤子'}
+                {item.hook ? item.hook.split('、').map((w) => t(w)).join('、') : t('沒有記憶鉤子')}
               </Text>
               <Row>
                 <Stars value={item.stars} size={22} onChange={(v) => rate(item.id, v)} code="B07" />

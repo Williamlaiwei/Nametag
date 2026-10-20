@@ -169,6 +169,24 @@ export const DISC_AXES: DiscAxis[] = [
 export const AGE_STAGES = ['10歲以下', '10–15', '15–20', '20–30', '30–35', '35以上'];
 export const DEFAULT_AGE_STAGE = 3;
 
+// 進階年紀:直接選歲數(5–80),階段由歲數推出來;粗略模式只選階段
+export const AGE_MIN_YEARS = 5;
+export const AGE_MAX_YEARS = 80;
+const STAGE_MID_YEARS = [8, 13, 18, 25, 33, 45];
+
+export function yearsToStage(y: number): number {
+  if (y < 10) return 0;
+  if (y < 15) return 1;
+  if (y < 20) return 2;
+  if (y < 30) return 3;
+  if (y < 35) return 4;
+  return 5;
+}
+
+export function stageToYears(stage: number): number {
+  return STAGE_MID_YEARS[Math.min(5, Math.max(0, stage))];
+}
+
 /** 身材:男女各一條,0 = 一般,往上越明顯。 */
 export const FIGURE_STEPS = 4;
 export const FIGURE_LABELS = ['一般', '稍明顯', '明顯', '很明顯'];

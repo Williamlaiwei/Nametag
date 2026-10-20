@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1400" width="1000" height="1400">
+  <g id="hair_front">
+    <path d="M 429.3 258.3 C 420.5 199.4 444.1 146.4 500 137.6 C 558.9 134.6 591.3 175.8 582.4 258.3 C 576.6 217.1 564.8 190.6 538.3 178.8 C 505.9 167 464.7 178.8 444.1 208.2 C 435.2 223 432.3 240.6 429.3 258.3 Z" fill="#6B3F2A" stroke="#3B211B" stroke-width="4.1" stroke-linejoin="round" stroke-linecap="round" data-fill="hair" data-stroke="#3B211B"/>
+    <path d="M 449.9 178.8 C 491.2 155.2 544.2 158.2 573.6 187.6" fill="none" stroke="#4d2d1e" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="hairShade"/>
+    <path d="M 444.1 205.3 C 485.3 175.8 547.1 181.7 576.6 214.1" fill="none" stroke="#4d2d1e" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="hairShade"/>
+  </g>
+</svg>

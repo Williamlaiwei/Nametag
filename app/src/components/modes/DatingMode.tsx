@@ -3,7 +3,7 @@ import { Alert, Text, View } from 'react-native';
 import { blankPerson, type PersonDraft } from '@/db';
 import { DEFAULT_FACE, FaceAvatar, parseFace } from '@/components/Face';
 import { PersonEditor } from '@/components/PersonEditor';
-import { useSettings } from '@/components/Settings';
+import { useSettings, useT } from '@/components/Settings';
 import { SpectrumSlider } from '@/components/SpectrumSlider';
 import { HookBadges } from '@/components/HookBadges';
 import { Tag } from '@/components/Tag';
@@ -24,6 +24,7 @@ const INFO_FIELDS: { key: string; label: string; placeholder: string }[] = [
 ];
 
 export function DatingMode() {
+  const t = useT();
   const { style } = useSettings();
   const [draft, setDraft] = useState<PersonDraft>(blankPerson);
   const [liking, setLiking] = useState(0);
@@ -34,14 +35,14 @@ export function DatingMode() {
   const face = parseFace(draft.face) ?? DEFAULT_FACE;
 
   const addEntry = () => {
-    const t = entry.trim();
-    if (!t) return;
-    setLog([stampNote(t), ...log]);
+    const text = entry.trim();
+    if (!text) return;
+    setLog([stampNote(text), ...log]);
     setEntry('');
   };
 
   const save = () => {
-    Alert.alert('還沒接上儲存', '約會版目前只有畫面,資料還不會存下來。');
+    Alert.alert(t('還沒接上儲存'), t('約會版目前只有畫面,資料還不會存下來。'));
   };
 
   return (
@@ -50,16 +51,17 @@ export function DatingMode() {
         value={draft}
         onChange={setDraft}
         onActiveChange={setBusy}
+        hideClothColor
         scoreSlot={
           <View style={{ marginLeft: 8, marginBottom: 10, alignItems: 'center', minWidth: 56 }}>
             <Text style={{ fontSize: 20, fontWeight: '800', color: likingColor(liking) }}>{liking}</Text>
-            <Text style={{ fontSize: 10, color: likingColor(liking) }}>{likingLabel(liking)}</Text>
+            <Text style={{ fontSize: 10, color: likingColor(liking) }}>{t(likingLabel(liking))}</Text>
           </View>
         }
       />
 
       <Card style={{ marginTop: 4 }}>
-        <Label>好感度 {LIKING_MIN} ~ +{LIKING_MAX}</Label>
+        <Label>{t('好感度 {0} ~ +{1}', LIKING_MIN, LIKING_MAX)}</Label>
         <SpectrumSlider
           steps={LIKING_MAX - LIKING_MIN + 1}
           value={liking - LIKING_MIN}
@@ -70,26 +72,26 @@ export function DatingMode() {
       </Card>
 
       <Card style={{ marginTop: 8 }}>
-        <Label>個人資訊</Label>
+        <Label>{t('個人資訊')}</Label>
         {INFO_FIELDS.map((f, i) => (
           <Field
             key={f.key}
             code={`Y0${4 + i}`}
-            placeholder={`${f.label}${f.placeholder ? `(${f.placeholder})` : ''}`}
+            placeholder={`${t(f.label)}${f.placeholder ? `(${t(f.placeholder)})` : ''}`}
             value={info[f.key] ?? ''}
-            onChangeText={(t) => setInfo({ ...info, [f.key]: t })}
+            onChangeText={(v) => setInfo({ ...info, [f.key]: v })}
             style={{ paddingVertical: 7, fontSize: 14, marginBottom: 0 }}
           />
         ))}
       </Card>
 
       <Card style={{ marginTop: 8 }}>
-        <Label>約會備註(自動加時間)</Label>
+        <Label>{t('約會備註(自動加時間)')}</Label>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <View style={{ flex: 1 }}>
-            <Field code="Y10" placeholder="今天聊了什麼、感覺如何" value={entry} onChangeText={setEntry} onSubmitEditing={addEntry} style={{ paddingVertical: 7, fontSize: 14 }} />
+            <Field code="Y10" placeholder={t('今天聊了什麼、感覺如何')} value={entry} onChangeText={setEntry} onSubmitEditing={addEntry} style={{ paddingVertical: 7, fontSize: 14 }} />
           </View>
-          <Button title="加入" onPress={addEntry} kind="ghost" code="Y11" style={{ marginLeft: 8, marginBottom: 10 }} />
+          <Button title={t('加入')} onPress={addEntry} kind="ghost" code="Y11" style={{ marginLeft: 8, marginBottom: 10 }} />
         </View>
         {log.map((l, i) => (
           <Text key={i} style={{ color: colors.ink, fontSize: 13, marginTop: 4 }}>
@@ -107,14 +109,14 @@ export function DatingMode() {
           <HookBadges hook={draft.hook} size={18} />
           <View style={{ flex: 1, marginLeft: 10 }}>
             <Text style={{ color: colors.ink, fontSize: 15 }} numberOfLines={1}>
-              {draft.name || '(沒有名字)'}
+              {draft.name || t('(沒有名字)')}
             </Text>
             <Text style={{ color: likingColor(liking), fontSize: 12 }} numberOfLines={1}>
-              好感 {liking} · {likingLabel(liking)}
+              {t('好感 {0} · {1}', liking, t(likingLabel(liking)))}
             </Text>
           </View>
         </View>
-        <Button title="記下來" onPress={save} code="Y01" style={{ marginLeft: 10 }} />
+        <Button title={t('記下來')} onPress={save} code="Y01" style={{ marginLeft: 10 }} />
       </View>
     </Screen>
   );

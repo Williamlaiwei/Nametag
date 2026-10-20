@@ -36,7 +36,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "avatar:build": "node scripts/avatar/build.mjs",
-    "avatar:test": "node scripts/avatar/build.mjs && node scripts/avatar/test.mjs"
+    "avatar:test": "node scripts/avatar/build.mjs && node scripts/avatar/test.mjs m && node scripts/avatar/test.mjs f"
   },
   "private": true
 }

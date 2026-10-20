@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1400" width="1000" height="1400">
+  <g id="shoes">
+    <path d="M 408.7 1235.8 L 467.6 1235.8 C 473.5 1271.1 473.5 1291.7 464.7 1306.4 C 432.3 1324.1 373.4 1332.9 346.9 1324.1 C 332.2 1318.2 335.1 1291.7 361.6 1274.1 C 388.1 1253.4 399.9 1247.6 408.7 1235.8 Z" fill="#5B7FA3" stroke="#3B211B" stroke-width="4.9" stroke-linejoin="round" stroke-linecap="round" data-fill="#5B7FA3" data-stroke="#3B211B"/>
+    <path d="M 338.1 1297.6 C 335.1 1318.2 358.7 1332.9 388.1 1330 C 432.3 1324.1 458.8 1312.3 470.6 1291.7 L 467.6 1309.4 C 449.9 1327.1 397 1338.8 364.6 1335.9 C 341 1332.9 333.6 1312.3 338.1 1297.6 Z" fill="#E8E1D2" stroke="#3B211B" stroke-width="3.8" stroke-linejoin="round" stroke-linecap="round" data-fill="#E8E1D2" data-stroke="#3B211B"/>
+    <path d="M 402.8 1253.4 L 438.2 1262.3 M 397 1268.2 L 438.2 1277" fill="none" stroke="#F5F1E6" stroke-width="3.8" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="#F5F1E6"/>
+    <path d="M 591.3 1235.8 L 532.4 1235.8 C 526.5 1271.1 526.5 1291.7 535.3 1306.4 C 567.7 1324.1 626.6 1332.9 653.1 1324.1 C 667.8 1318.2 664.9 1291.7 638.4 1274.1 C 611.9 1253.4 600.1 1247.6 591.3 1235.8 Z" fill="#5B7FA3" stroke="#3B211B" stroke-width="4.9" stroke-linejoin="round" stroke-linecap="round" data-fill="#5B7FA3" data-stroke="#3B211B"/>
+    <path d="M 661.9 1297.6 C 664.9 1318.2 641.3 1332.9 611.9 1330 C 567.7 1324.1 541.2 1312.3 529.4 1291.7 L 532.4 1309.4 C 550.1 1327.1 603 1338.8 635.4 1335.9 C 659 1332.9 666.4 1312.3 661.9 1297.6 Z" fill="#E8E1D2" stroke="#3B211B" stroke-width="3.8" stroke-linejoin="round" stroke-linecap="round" data-fill="#E8E1D2" data-stroke="#3B211B"/>
+    <path d="M 597.2 1253.4 L 561.8 1262.3 M 603 1268.2 L 561.8 1277" fill="none" stroke="#F5F1E6" stroke-width="3.8" stroke-linejoin="round" stroke-linecap="round" data-fill="none" data-stroke="#F5F1E6"/>
+  </g>
+</svg>

@@ -6,19 +6,20 @@ import { SQLiteProvider, useSQLiteContext } from 'expo-sqlite';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { getSetting, migrateDbIfNeeded, purgeExpired } from '@/db';
 import { Button } from '@/components/ui';
-import { SettingsProvider } from '@/components/Settings';
+import { SettingsProvider, useT } from '@/components/Settings';
 import { TagsProvider, TagsToggle } from '@/components/Tag';
 import { colors } from '@/theme';
 
 /** 開啟 App 密碼 / 生物辨識:保護私人筆記(例如你給誰打了幾顆星)。 */
 function LockGate({ children }: { children: React.ReactNode }) {
   const db = useSQLiteContext();
+  const t = useT();
   const [state, setState] = useState<'checking' | 'locked' | 'open'>('checking');
 
   const unlock = useCallback(async () => {
-    const result = await LocalAuthentication.authenticateAsync({ promptMessage: '解鎖 Partyking' });
+    const result = await LocalAuthentication.authenticateAsync({ promptMessage: t('解鎖 Partyking') });
     setState(result.success ? 'open' : 'locked');
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     (async () => {
@@ -36,8 +37,26 @@ function LockGate({ children }: { children: React.ReactNode }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.bg, padding: 24 }}>
       <Text style={{ fontSize: 22, fontWeight: '700', color: colors.ink, marginBottom: 16 }}>Partyking</Text>
-      {state === 'locked' && <Button title="解鎖" onPress={unlock} code="H01" />}
+      {state === 'locked' && <Button title={t('解鎖')} onPress={unlock} code="H01" />}
     </View>
+  );
+}
+
+function AppStack() {
+  const t = useT();
+  return (
+    <Stack
+          screenOptions={{
+            headerStyle: { backgroundColor: colors.bg },
+            headerTintColor: colors.ink,
+            contentStyle: { backgroundColor: colors.bg },
+          }}
+        >
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="person/[id]" options={{ title: t('認識的人') }} />
+          <Stack.Screen name="gathering/[id]" options={{ title: t('聚會') }} />
+          <Stack.Screen name="scan" options={{ title: t('掃描 QR 碼'), presentation: 'modal' }} />
+    </Stack>
   );
 }
 
@@ -49,18 +68,7 @@ export default function RootLayout() {
       <SettingsProvider>
       <View style={{ flex: 1 }}>
       <LockGate>
-        <Stack
-          screenOptions={{
-            headerStyle: { backgroundColor: colors.bg },
-            headerTintColor: colors.ink,
-            contentStyle: { backgroundColor: colors.bg },
-          }}
-        >
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="person/[id]" options={{ title: '認識的人' }} />
-          <Stack.Screen name="gathering/[id]" options={{ title: '聚會' }} />
-          <Stack.Screen name="scan" options={{ title: '掃描 QR 碼', presentation: 'modal' }} />
-        </Stack>
+        <AppStack />
       </LockGate>
       <TagsToggle />
       </View>

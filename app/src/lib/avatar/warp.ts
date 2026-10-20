@@ -81,3 +81,79 @@ export function shade(hex: string, amt: number): string {
   });
   return '#' + ch.map((c) => c.toString(16).padStart(2, '0')).join('');
 }
+
+// ───────── 身高:改變整體比例,不是等比例縮放 ─────────
+// 腳底與鞋子固定;腿拉長最多(±30%),軀幹微調(±8%),頭、臉、頭髮、眼鏡大小不變、整個往上或下平移。
+// 這樣高的人是腿比較長、頭相對較小,矮的人相反。座標是 1000×1400 畫布。
+
+/** 垂直分區(畫布座標):shoulder 以上整體平移;shoulder–crotch 軀幹;crotch–foot 腿;foot 以下鞋子不動 */
+export type Zones = { shoulder: number; crotch: number; foot: number };
+export const MALE_ZONES: Zones = { shoulder: 420, crotch: 821, foot: 1240 };
+export const FEMALE_ZONES: Zones = { shoulder: 410, crotch: 796, foot: 1215 };
+
+export type HeightWarp = { a: number; b: number; headDy: number; z: Zones };
+
+/** height 0–1(0.5 = 參考圖的身高) */
+export function heightWarp(height: number, z: Zones = MALE_ZONES): HeightWarp {
+  const h = Math.min(1, Math.max(0, height)) - 0.5;
+  const a = h * 0.6;
+  const b = h * 0.16;
+  const yc = z.foot - (z.foot - z.crotch) * (1 + a);
+  const ys = yc - (z.crotch - z.shoulder) * (1 + b);
+  return { a, b, headDy: ys - z.shoulder, z };
+}
+
+function mapY(y: number, hw: HeightWarp): number {
+  const { shoulder, crotch, foot } = hw.z;
+  if (y >= foot) return y;
+  const yc = foot - (foot - crotch) * (1 + hw.a);
+  if (y >= crotch) return foot - (foot - y) * (1 + hw.a);
+  if (y >= shoulder) return yc - (crotch - y) * (1 + hw.b);
+  return y + hw.headDy;
+}
+
+/** 身體、衣服:垂直方向分段拉伸 */
+export function warpPathY(d: string, hw: HeightWarp): string {
+  if (hw.a === 0 && hw.b === 0) return d;
+  return mapPairs(d, (x, y) => [x, mapY(y, hw)]);
+}
+
+/** 頭、頭髮、眼鏡:整塊上下平移,大小不變 */
+export function shiftPathY(d: string, hw: HeightWarp): string {
+  if (hw.headDy === 0) return d;
+  return mapPairs(d, (x, y) => [x, y + hw.headDy]);
+}
+
+/** 預留頭頂空間:最高的人(height=1)髮頂約在 y=-90 */
+export const VIEW_TOP = -100;
+export const VIEW_H = 1500;
+
+// ───────── 身材:女 = 曲線(胸、腰、臀),男 = 肌肉(肩胸、手臂) ─────────
+// 對身體、衣服的橫向再做一次依高度變化的伸縮;amount 0–3(一般、稍明顯、明顯、很明顯)。
+export type FigureKind = 'curvy' | 'muscle';
+export type Figure = { kind: FigureKind; amount: number };
+
+// [中心 y, 影響寬度, 每級增減比例]
+const FIGURE_BUMPS: Record<FigureKind, [number, number, number][]> = {
+  curvy: [
+    [545, 40, 0.05], // 胸
+    [615, 45, -0.07], // 腰
+    [720, 55, 0.07], // 臀
+  ],
+  muscle: [[520, 80, 0.07]], // 肩胸與上臂
+};
+// 離中線多遠以內完整套用、多遠以外完全不動(手臂不跟著腰一起縮):[完整, 不動]。肌肉要連手臂一起變粗,所以不設限。
+const FIGURE_REACH: Record<FigureKind, [number, number]> = { curvy: [95, 140], muscle: [9999, 10000] };
+
+export function warpPathFigure(d: string, fig: Figure | undefined): string {
+  if (!fig || fig.amount <= 0) return d;
+  const bumps = FIGURE_BUMPS[fig.kind];
+  return mapPairs(d, (x, y) => {
+    const [full, none] = FIGURE_REACH[fig.kind];
+    const dx = x - CENTER_X;
+    const reach = Math.min(1, Math.max(0, (none - Math.abs(dx)) / (none - full)));
+    let f = 1;
+    for (const [cy, sigma, k] of bumps) f += fig.amount * k * Math.exp(-(((y - cy) / sigma) ** 2));
+    return [CENTER_X + dx * (1 + (f - 1) * reach), y];
+  });
+}
